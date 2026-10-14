@@ -1,0 +1,947 @@
+<!doctype html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sekarsa Kopi - Katalog Produk Spesial</title>
+    <meta
+      name="description"
+      content="Katalog produk kopi robusta & arabika dari Dusun Wonorejo, Desa Sukodono, Dampit, Kabupaten Malang."
+    />
+    <meta
+      name="author"
+      content="Tim KKN Sekarsa Kopi, Universitas Negeri Malang"
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"
+    />
+
+    <!-- Memanggil file CSS terpisah -->
+    <link rel="stylesheet" href="style.css" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "sekarsa-navy": "#1a3346",
+              "sekarsa-blue": "#4a6782",
+              "sekarsa-tan": "#d8aa83",
+              "sekarsa-ochre": "#a86c43",
+              "sekarsa-red": "#6b251a",
+              "sekarsa-dark": "#3b231d",
+            },
+            fontFamily: {
+              sans: ["Poppins", "sans-serif"],
+              serif: ["Playfair Display", "serif"],
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="font-sans text-gray-800 antialiased overflow-x-hidden">
+    <!-- UI Elements Universal -->
+    <div id="scroll-progress"></div>
+
+    <div id="success-toast" role="status" aria-live="polite">
+      <div
+        class="w-10 h-10 rounded-full bg-sekarsa-tan/20 flex items-center justify-center flex-shrink-0 text-sekarsa-tan"
+      >
+        <i class="fas fa-check"></i>
+      </div>
+      <div>
+        <p id="toast-title" class="font-bold text-sekarsa-tan text-sm mb-0.5">
+          Berhasil!
+        </p>
+        <p id="toast-message" class="text-xs text-gray-200">
+          Pesanan ditambahkan.
+        </p>
+      </div>
+    </div>
+
+    <button
+      id="floating-cart-btn"
+      class="fixed top-1/2 right-4 transform -translate-y-1/2 bg-sekarsa-navy text-sekarsa-tan p-4 rounded-full shadow-2xl z-[90] hidden items-center justify-center hover:scale-110 transition-transform border-2 border-sekarsa-tan"
+    >
+      <i class="fas fa-shopping-basket text-xl"></i>
+      <span
+        id="cart-badge"
+        class="absolute -top-2 -left-2 bg-sekarsa-red text-white font-bold text-xs w-6 h-6 rounded-full flex items-center justify-center shadow"
+        >0</span
+      >
+    </button>
+
+    <a
+      href="https://wa.me/6282330636915"
+      target="_blank"
+      class="wa-float"
+      aria-label="Hubungi via WhatsApp"
+    >
+      <i class="fab fa-whatsapp text-2xl"></i>
+      <span class="font-medium hidden sm:block">Chat WhatsApp</span>
+    </a>
+
+    <!-- Custom Share Modal Khusus Desktop/PC -->
+    <div
+      id="share-overlay"
+      class="fixed inset-0 bg-black/50 z-[105] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm"
+    ></div>
+    <div
+      id="share-modal"
+      class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl z-[110] w-[90%] max-w-md p-6 sm:p-8 hidden opacity-0 transition-all duration-300 scale-95"
+    >
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-serif font-bold text-sekarsa-dark">
+          Bagikan ke Teman
+        </h3>
+        <button
+          id="close-share-btn"
+          class="text-gray-400 hover:text-sekarsa-red text-2xl transition outline-none"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <p
+        id="share-modal-title"
+        class="text-sm text-gray-600 mb-6 line-clamp-2"
+      ></p>
+      <div class="grid grid-cols-4 gap-4 mb-6">
+        <a
+          id="share-wa"
+          href="#"
+          target="_blank"
+          class="flex flex-col items-center gap-2 group"
+        >
+          <div
+            class="w-12 h-12 rounded-full bg-[#25D366] text-white flex items-center justify-center text-xl group-hover:scale-110 transition shadow-md"
+          >
+            <i class="fab fa-whatsapp"></i>
+          </div>
+          <span class="text-[10px] font-semibold text-gray-600">WhatsApp</span>
+        </a>
+        <a
+          id="share-fb"
+          href="#"
+          target="_blank"
+          class="flex flex-col items-center gap-2 group"
+        >
+          <div
+            class="w-12 h-12 rounded-full bg-[#1877F2] text-white flex items-center justify-center text-xl group-hover:scale-110 transition shadow-md"
+          >
+            <i class="fab fa-facebook-f"></i>
+          </div>
+          <span class="text-[10px] font-semibold text-gray-600">Facebook</span>
+        </a>
+        <a
+          id="share-x"
+          href="#"
+          target="_blank"
+          class="flex flex-col items-center gap-2 group"
+        >
+          <div
+            class="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center text-xl group-hover:scale-110 transition shadow-md"
+          >
+            <i class="fab fa-x-twitter"></i>
+          </div>
+          <span class="text-[10px] font-semibold text-gray-600"
+            >Twitter (X)</span
+          >
+        </a>
+        <button
+          id="share-copy"
+          class="flex flex-col items-center gap-2 group outline-none"
+        >
+          <div
+            class="w-12 h-12 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center text-xl group-hover:scale-110 group-hover:bg-sekarsa-ochre group-hover:text-white transition shadow-md"
+          >
+            <i class="fas fa-link"></i>
+          </div>
+          <span class="text-[10px] font-semibold text-gray-600"
+            >Salin Link</span
+          >
+        </button>
+      </div>
+      <div
+        class="bg-gray-50 rounded-xl p-3 flex items-center border border-gray-200"
+      >
+        <input
+          type="text"
+          id="share-url-input"
+          class="bg-transparent text-xs text-gray-500 w-full outline-none"
+          readonly
+        />
+      </div>
+    </div>
+
+    <!-- Sidebar Keranjang -->
+    <div
+      id="cart-overlay"
+      class="fixed inset-0 bg-black/60 z-[95] hidden opacity-0 transition-opacity duration-300"
+    ></div>
+    <div
+      id="cart-sidebar"
+      class="fixed inset-y-0 right-0 w-full md:w-[400px] bg-white z-[100] transform translate-x-full transition-transform duration-300 shadow-2xl flex flex-col"
+    >
+      <div
+        class="p-6 border-b border-white/10 flex justify-between items-center bg-sekarsa-navy text-white"
+      >
+        <h3 class="text-xl font-serif font-bold flex items-center gap-3">
+          <i class="fas fa-shopping-basket text-sekarsa-tan"></i> Keranjang Anda
+        </h3>
+        <button
+          id="close-cart-btn"
+          class="text-gray-300 hover:text-white text-2xl transition outline-none"
+        >
+          &times;
+        </button>
+      </div>
+      <div
+        id="cart-items-list"
+        class="flex-grow overflow-y-auto p-6 space-y-4 bg-gray-50"
+      ></div>
+      <div
+        class="p-6 bg-white border-t border-gray-200 shadow-[0_-10px_20px_rgba(0,0,0,0.05)]"
+      >
+        <div class="flex justify-between items-center mb-6">
+          <span class="font-semibold text-gray-600">Total Biaya:</span>
+          <span
+            id="cart-total-price"
+            class="text-2xl font-bold text-sekarsa-red"
+            >Rp 0</span
+          >
+        </div>
+        <p class="text-xs text-gray-500 mb-3 text-center font-medium">
+          Pilih metode pemesanan (Marketplace):
+        </p>
+        <div class="grid grid-cols-1 gap-3">
+          <button
+            id="btn-checkout-web"
+            class="w-full bg-sekarsa-navy text-white py-3 rounded-xl font-bold hover:bg-sekarsa-dark transition flex items-center justify-center gap-2"
+          >
+            <i class="fas fa-envelope"></i> Hubungi via Web Form
+          </button>
+          <div class="grid grid-cols-2 gap-3">
+            <a
+              href="https://shopee.co.id/sekarsakopii"
+              target="_blank"
+              class="bg-[#EE4D2D] text-white py-3 rounded-xl font-bold hover:bg-orange-600 transition flex items-center justify-center gap-2"
+              ><i class="fas fa-shopping-bag"></i> Shopee</a
+            >
+            <a
+              href="https://www.tiktok.com/@sekarsa.kopi"
+              target="_blank"
+              class="bg-black text-white py-3 rounded-xl font-bold hover:bg-gray-800 transition flex items-center justify-center gap-2"
+              ><i class="fab fa-tiktok"></i> TikTok</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav
+      id="main-navbar"
+      class="fixed w-full z-50 bg-white/95 backdrop-blur-sm shadow-md h-20"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full relative">
+        <div class="flex justify-between items-center h-full">
+          <a
+            href="index.html"
+            class="flex-shrink-0 flex items-center gap-2 sm:gap-3"
+          >
+            <img
+              src="elemen/Asset 9.png"
+              alt="Logo Sekarsa Kopi"
+              width="40"
+              height="40"
+              class="h-8 sm:h-10 w-auto object-contain"
+            />
+            <div
+              class="font-serif font-bold text-xl sm:text-2xl text-sekarsa-dark tracking-wide"
+            >
+              SEKARSA KOPI
+            </div>
+          </a>
+          <div class="nav-links hidden md:flex space-x-6 items-center">
+            <a
+              href="index.html"
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition"
+              >Beranda</a
+            >
+            <a
+              href="produk.html"
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition active"
+              >Produk</a
+            >
+            <a
+              href="profil.html"
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition"
+              >Profil</a
+            >
+            <a
+              href="artikel.html"
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition"
+              >Artikel</a
+            >
+            <button
+              onclick="
+                document
+                  .getElementById('tracking-modal')
+                  .classList.remove('hidden')
+              "
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition cursor-pointer"
+            >
+              Lacak Pesanan
+            </button>
+            <button
+              id="nav-btn-auth"
+              onclick="toggleAuthModal()"
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition cursor-pointer"
+            >
+              <i class="fas fa-user-circle mr-1"></i>
+              <span id="nav-auth-text">Login / Daftar</span>
+            </button>
+            <a
+              href="kontak.html"
+              class="btn-kontak bg-sekarsa-dark text-white px-5 py-2 rounded-full hover:bg-sekarsa-red transition font-medium"
+              >Kontak</a
+            >
+          </div>
+          <button
+            id="mobile-menu-btn"
+            class="md:hidden text-sekarsa-dark hover:text-sekarsa-ochre focus:outline-none text-2xl pr-2"
+          >
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+        <div
+          id="mobile-menu"
+          class="mobile-menu-links closed absolute top-20 left-0 w-full bg-white shadow-xl flex-col pb-6 pt-2 space-y-4 items-center md:hidden border-t border-gray-100"
+        >
+          <a
+            href="index.html"
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2"
+            >Beranda</a
+          >
+          <a
+            href="produk.html"
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2 active"
+            >Produk</a
+          >
+          <a
+            href="profil.html"
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2"
+            >Profil</a
+          >
+          <a
+            href="kegiatan.html"
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2"
+            >Kegiatan</a
+          >
+          <a
+            href="artikel.html"
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2"
+            >Artikel</a
+          >
+          <button
+            onclick="
+              document
+                .getElementById('tracking-modal')
+                .classList.remove('hidden');
+              document.getElementById('mobile-menu-btn').click();
+            "
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2 cursor-pointer"
+          >
+            Lacak Pesanan
+          </button>
+          <button
+            onclick="
+              toggleAuthModal();
+              document.getElementById('mobile-menu-btn').click();
+            "
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2 cursor-pointer"
+          >
+            <i class="fas fa-user-circle mr-1"></i>
+            <span id="mobile-auth-text">Login / Daftar</span>
+          </button>
+          <a
+            href="kontak.html"
+            class="btn-kontak bg-sekarsa-dark text-white px-8 py-2.5 rounded-full hover:bg-sekarsa-red transition font-medium mt-2 shadow-md"
+            >Kontak Kami</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <!-- Halaman PRODUK Utama -->
+    <main class="page bg-kontur-tanah">
+      <div class="py-12 min-h-screen relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-10 sm:mb-12 reveal">
+            <h2
+              class="text-3xl sm:text-4xl font-serif font-bold text-sekarsa-dark mb-4"
+            >
+              Katalog Produk Spesial
+            </h2>
+            <div class="w-20 sm:w-24 h-1 bg-sekarsa-ochre mx-auto"></div>
+            <p
+              class="text-gray-500 mt-4 max-w-2xl mx-auto font-medium text-sm sm:text-base"
+            >
+              Manfaatkan potongan harga Rp 5.000 selama
+              <strong>Promo Kemerdekaan!</strong>
+            </p>
+          </div>
+
+          <!-- Kopi Advisor Quiz -->
+          <div
+            id="ai-advisor"
+            class="reveal max-w-4xl mx-auto mb-12 sm:mb-16 bg-gradient-to-br from-sekarsa-navy to-sekarsa-dark rounded-3xl shadow-2xl p-6 sm:p-8 md:p-12 text-white relative overflow-hidden"
+          >
+            <div
+              class="absolute -right-6 -top-10 opacity-10 pointer-events-none"
+            >
+              <i class="fas fa-mug-hot text-[140px] sm:text-[180px]"></i>
+            </div>
+            <div class="relative z-10">
+              <span
+                class="inline-flex items-center gap-2 bg-white/10 text-sekarsa-tan text-[10px] sm:text-xs font-bold tracking-widest uppercase px-3 sm:px-4 py-1.5 rounded-full mb-4"
+                ><i class="fas fa-wand-magic-sparkles"></i> Kopi Advisor</span
+              >
+              <h3
+                class="text-xl sm:text-2xl md:text-3xl font-serif font-bold mb-2"
+              >
+                Bingung Pilih Kopi yang Mana?
+              </h3>
+              <p class="text-xs sm:text-sm text-gray-300 mb-6 sm:mb-8 max-w-xl">
+                Jawab 3 pertanyaan singkat, sistem kami akan mencocokkan racikan
+                Sekarsa yang paling pas dengan seleramu.
+              </p>
+              <div id="quiz-progress" class="flex gap-2 mb-6 sm:mb-8"></div>
+              <div id="quiz-questions"></div>
+              <div id="quiz-result" class="hidden"></div>
+            </div>
+          </div>
+
+          <!-- Grid Produk Dinamis -->
+          <div
+            id="katalog-produk-container"
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto mb-16 reveal-grid"
+          >
+            <div class="col-span-full text-center py-16">
+              <i
+                class="fas fa-circle-notch fa-spin text-5xl text-sekarsa-tan mb-4"
+              ></i>
+              <p class="text-gray-500 font-medium">
+                Memuat katalog produk spesial...
+              </p>
+            </div>
+          </div>
+
+          <!-- Form Review -->
+          <div
+            id="section-review"
+            class="reveal max-w-3xl mx-auto mt-8 mb-16 bg-white border border-gray-200 rounded-3xl p-6 sm:p-8 md:p-12 shadow-2xl relative z-10"
+          >
+            <h3
+              class="text-2xl sm:text-3xl font-serif font-bold text-sekarsa-dark mb-2 text-center"
+            >
+              Bagikan Pengalaman Anda
+            </h3>
+            <p
+              class="text-xs sm:text-sm text-gray-500 text-center mb-8 sm:mb-10"
+            >
+              Beri bintang dan ulasan untuk produk Sekarsa Kopi
+            </p>
+            <form id="review-form" class="space-y-4 sm:space-y-6">
+              <div>
+                <label
+                  class="block text-sm font-semibold text-gray-700 mb-1 sm:mb-2"
+                  >Nama Lengkap</label
+                >
+                <input
+                  type="text"
+                  id="review-name"
+                  required
+                  class="w-full border border-gray-300 rounded-xl p-3 sm:p-4 outline-none focus:ring-2 focus:ring-sekarsa-ochre bg-gray-50 transition"
+                  placeholder="Masukkan nama Anda..."
+                />
+              </div>
+              <div class="flex flex-col items-center justify-center mt-2">
+                <label
+                  class="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3"
+                  >Penilaian Anda</label
+                >
+                <div
+                  class="flex flex-row-reverse justify-center gap-1 sm:gap-2 star-rating"
+                >
+                  <input
+                    type="radio"
+                    id="star5"
+                    name="rating"
+                    value="5"
+                    class="hidden"
+                    checked
+                  /><label
+                    for="star5"
+                    class="text-4xl sm:text-5xl text-gray-300 cursor-pointer transition hover:scale-110"
+                    ><i class="fas fa-star"></i
+                  ></label>
+                  <input
+                    type="radio"
+                    id="star4"
+                    name="rating"
+                    value="4"
+                    class="hidden"
+                  /><label
+                    for="star4"
+                    class="text-4xl sm:text-5xl text-gray-300 cursor-pointer transition hover:scale-110"
+                    ><i class="fas fa-star"></i
+                  ></label>
+                  <input
+                    type="radio"
+                    id="star3"
+                    name="rating"
+                    value="3"
+                    class="hidden"
+                  /><label
+                    for="star3"
+                    class="text-4xl sm:text-5xl text-gray-300 cursor-pointer transition hover:scale-110"
+                    ><i class="fas fa-star"></i
+                  ></label>
+                  <input
+                    type="radio"
+                    id="star2"
+                    name="rating"
+                    value="2"
+                    class="hidden"
+                  /><label
+                    for="star2"
+                    class="text-4xl sm:text-5xl text-gray-300 cursor-pointer transition hover:scale-110"
+                    ><i class="fas fa-star"></i
+                  ></label>
+                  <input
+                    type="radio"
+                    id="star1"
+                    name="rating"
+                    value="1"
+                    class="hidden"
+                  /><label
+                    for="star1"
+                    class="text-4xl sm:text-5xl text-gray-300 cursor-pointer transition hover:scale-110"
+                    ><i class="fas fa-star"></i
+                  ></label>
+                </div>
+              </div>
+              <div>
+                <label
+                  class="block text-sm font-semibold text-gray-700 mb-1 sm:mb-2"
+                  >Ulasan</label
+                >
+                <textarea
+                  id="review-text"
+                  rows="4"
+                  required
+                  class="w-full border border-gray-300 rounded-xl p-3 sm:p-4 outline-none focus:ring-2 focus:ring-sekarsa-ochre bg-gray-50 resize-none transition"
+                  placeholder="Ceritakan pengalaman Anda menyeduh kopi kami..."
+                ></textarea>
+              </div>
+              <button
+                type="button"
+                onclick="submitReview(event)"
+                class="btn-shine w-full bg-sekarsa-navy text-white py-3 sm:py-4 rounded-xl font-bold hover:bg-sekarsa-dark transition shadow-lg flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-lg"
+              >
+                <i class="fas fa-paper-plane"></i> Bagikan Pengalaman
+              </button>
+            </form>
+          </div>
+
+          <!-- List Review -->
+          <div class="max-w-7xl mx-auto mt-8 sm:mt-12 relative z-10 mb-16">
+            <div class="text-center mb-8 sm:mb-12 reveal">
+              <h3
+                class="text-2xl sm:text-3xl font-serif font-bold text-sekarsa-dark mb-4"
+              >
+                Ulasan Pelanggan
+              </h3>
+              <div class="w-16 sm:w-24 h-1 bg-sekarsa-ochre mx-auto"></div>
+            </div>
+            <div
+              id="reviews-container"
+              class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 reveal-grid"
+            >
+              <div
+                class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-gray-100 flex flex-col h-full opacity-50"
+              >
+                <p
+                  class="text-center text-xs sm:text-sm font-medium mt-auto mb-auto"
+                >
+                  <i
+                    class="fas fa-circle-notch fa-spin text-sekarsa-tan text-xl sm:text-2xl mb-2"
+                  ></i
+                  ><br />Memuat Ulasan...
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal Lacak Pesanan -->
+    <div
+      id="tracking-modal"
+      class="hidden fixed inset-0 bg-black/60 z-[150] flex items-center justify-center backdrop-blur-sm transition-all"
+    >
+      <div
+        class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl w-[90%] max-w-md relative"
+      >
+        <button
+          onclick="
+            document.getElementById('tracking-modal').classList.add('hidden')
+          "
+          class="absolute top-4 right-4 text-gray-400 hover:text-sekarsa-red text-2xl transition outline-none"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+        <h3
+          class="font-serif text-2xl sm:text-3xl font-bold text-sekarsa-dark mb-2"
+        >
+          Lacak Pesanan
+        </h3>
+        <p class="text-xs sm:text-sm text-gray-500 mb-6">
+          Masukkan kode unik resi yang Anda dapatkan setelah checkout.
+        </p>
+        <input
+          type="text"
+          id="tracking-input"
+          placeholder="Contoh: SK-12345678"
+          class="w-full border border-gray-300 rounded-xl p-3 sm:p-4 outline-none focus:border-sekarsa-ochre focus:ring-2 focus:ring-sekarsa-ochre mb-4 bg-gray-50 text-sm"
+        />
+        <button
+          onclick="checkTracking()"
+          class="w-full bg-sekarsa-navy text-white py-3 sm:py-3.5 rounded-xl font-bold hover:bg-sekarsa-dark transition shadow-lg text-sm sm:text-base"
+        >
+          <i class="fas fa-search mr-2"></i>Cek Status
+        </button>
+        <div id="tracking-result" class="mt-6"></div>
+      </div>
+    </div>
+
+    <!-- Modal Autentikasi -->
+    <div
+      id="auth-modal"
+      class="hidden fixed inset-0 bg-black/60 z-[160] flex items-center justify-center backdrop-blur-sm transition-all"
+    >
+      <div
+        class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl w-[90%] max-w-md relative overflow-hidden"
+      >
+        <button
+          onclick="toggleAuthModal()"
+          class="absolute top-4 right-4 text-gray-400 hover:text-sekarsa-red text-2xl transition outline-none"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+
+        <div class="flex border-b border-gray-200 mb-6">
+          <button
+            id="tab-login"
+            onclick="switchAuthTab('login')"
+            class="flex-1 py-3 text-center font-bold text-sekarsa-ochre border-b-2 border-sekarsa-ochre outline-none"
+          >
+            Login
+          </button>
+          <button
+            id="tab-register"
+            onclick="switchAuthTab('register')"
+            class="flex-1 py-3 text-center font-medium text-gray-400 border-b-2 border-transparent hover:text-gray-600 outline-none"
+          >
+            Daftar
+          </button>
+        </div>
+
+        <form id="form-login" class="space-y-4 block">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1"
+              >Nomor Handphone</label
+            >
+            <input
+              type="text"
+              id="login-hp"
+              placeholder="Contoh: 081234..."
+              class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:border-sekarsa-ochre bg-gray-50 text-sm"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1"
+              >Password</label
+            >
+            <input
+              type="password"
+              id="login-pass"
+              placeholder="***"
+              class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:border-sekarsa-ochre bg-gray-50 text-sm"
+            />
+          </div>
+          <button
+            type="button"
+            onclick="prosesLogin(event)"
+            class="w-full bg-sekarsa-navy text-white py-3.5 rounded-xl font-bold hover:bg-sekarsa-dark transition shadow-lg mt-2 text-sm"
+          >
+            Masuk
+          </button>
+        </form>
+
+        <form id="form-register" class="space-y-4 hidden">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1"
+              >Nama Lengkap</label
+            >
+            <input
+              type="text"
+              id="reg-nama"
+              placeholder="Nama Anda..."
+              class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:border-sekarsa-ochre bg-gray-50 text-sm"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1"
+              >Nomor Handphone</label
+            >
+            <input
+              type="text"
+              id="reg-hp"
+              placeholder="Contoh: 081234..."
+              class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:border-sekarsa-ochre bg-gray-50 text-sm"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1"
+              >Password</label
+            >
+            <input
+              type="password"
+              id="reg-pass"
+              placeholder="Buat password..."
+              class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:border-sekarsa-ochre bg-gray-50 text-sm"
+            />
+          </div>
+          <button
+            type="button"
+            onclick="prosesDaftar(event)"
+            class="w-full bg-sekarsa-ochre text-white py-3.5 rounded-xl font-bold hover:bg-sekarsa-tan transition shadow-lg mt-2 text-sm"
+          >
+            Daftar & Simpan
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Profil -->
+    <div
+      id="profile-modal"
+      class="hidden fixed inset-0 bg-black/60 z-[160] flex items-center justify-center backdrop-blur-sm transition-all"
+    >
+      <div
+        class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl w-[90%] max-w-lg relative overflow-hidden flex flex-col max-h-[85vh]"
+      >
+        <button
+          onclick="
+            document.getElementById('profile-modal').classList.add('hidden')
+          "
+          class="absolute top-4 right-4 text-gray-400 hover:text-sekarsa-red text-2xl transition outline-none"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+        <h3
+          class="font-serif text-2xl font-bold text-sekarsa-dark mb-4 border-b pb-3"
+        >
+          Profil Saya
+        </h3>
+
+        <div
+          class="bg-sekarsa-navy/5 p-4 rounded-xl mb-6 flex justify-between items-center border border-sekarsa-tan/20"
+        >
+          <div>
+            <p class="text-[10px] sm:text-xs text-gray-500 mb-0.5">
+              Nama Lengkap
+            </p>
+            <p
+              id="profile-nama"
+              class="font-bold text-sekarsa-dark text-sm sm:text-base"
+            >
+              -
+            </p>
+            <p class="text-[10px] sm:text-xs text-gray-500 mt-2 mb-0.5">
+              Nomor Handphone
+            </p>
+            <p
+              id="profile-hp"
+              class="font-bold text-sekarsa-dark text-sm sm:text-base"
+            >
+              -
+            </p>
+          </div>
+          <button
+            onclick="prosesLogout()"
+            class="bg-red-50 text-red-600 px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm hover:bg-red-100 transition shadow-sm border border-red-200 flex items-center gap-2"
+          >
+            <i class="fas fa-sign-out-alt"></i> Keluar
+          </button>
+        </div>
+
+        <h4 class="font-bold text-sekarsa-dark mb-3 text-sm sm:text-base">
+          <i class="fas fa-history mr-2 text-sekarsa-ochre"></i>Riwayat Pesanan
+          Anda
+        </h4>
+        <div
+          id="profile-history-list"
+          class="flex-grow overflow-y-auto space-y-3 pr-2"
+          style="scrollbar-width: thin"
+        ></div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer
+      class="bg-sekarsa-dark text-white pt-12 sm:pt-16 pb-6 sm:pb-8 border-t border-white/10 bg-kontur-tanah bg-blend-overlay"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 pb-8 sm:pb-12 border-b border-white/10"
+        >
+          <div class="lg:col-span-2 pr-0 md:pr-4">
+            <div class="flex items-center gap-3 mb-4 sm:mb-6">
+              <img
+                src="elemen/Asset 9.png"
+                alt="Logo Sekarsa Kopi"
+                loading="lazy"
+                decoding="async"
+                width="48"
+                height="48"
+                class="h-10 sm:h-12 w-auto object-contain invert brightness-0"
+              />
+              <div
+                class="font-serif font-bold text-xl sm:text-2xl tracking-wide"
+              >
+                SEKARSA KOPI
+              </div>
+            </div>
+            <p
+              class="text-xs sm:text-sm text-gray-400 max-w-sm leading-relaxed"
+            >
+              Unit usaha kopi dari tim KKN Universitas Negeri Malang di Desa
+              Sukodono. Merawat kembali kopi robusta lokal sebagai komoditas
+              unggulan dan identitas budaya masyarakat.
+            </p>
+          </div>
+          <div class="lg:col-span-1">
+            <h4
+              class="font-sans text-[10px] sm:text-xs font-bold tracking-widest uppercase text-sekarsa-ochre mb-4 sm:mb-6"
+            >
+              Jelajahi
+            </h4>
+            <div
+              class="flex flex-col space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-400"
+            >
+              <a href="index.html" class="hover:text-white transition"
+                >Beranda</a
+              >
+              <a href="produk.html" class="hover:text-white transition"
+                >Katalog Produk</a
+              >
+              <a href="profil.html" class="hover:text-white transition"
+                >Profil Tim</a
+              >
+              <a href="kegiatan.html" class="hover:text-white transition"
+                >Kegiatan</a
+              >
+              <a href="artikel.html" class="hover:text-white transition"
+                >Artikel</a
+              >
+              <a href="kontak.html" class="hover:text-white transition"
+                >Kontak Kami</a
+              >
+            </div>
+          </div>
+          <div class="lg:col-span-1">
+            <h4
+              class="font-sans text-[10px] sm:text-xs font-bold tracking-widest uppercase text-sekarsa-ochre mb-4 sm:mb-6"
+            >
+              Produk
+            </h4>
+            <div
+              class="flex flex-col space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-400"
+            >
+              <a href="produk.html" class="hover:text-white transition"
+                >Bubuk</a
+              >
+              <a href="produk.html" class="hover:text-white transition"
+                >Roast Beans</a
+              >
+              <a href="produk.html" class="hover:text-white transition"
+                >Green Beans</a
+              >
+              <a href="produk.html" class="hover:text-white transition"
+                >Drip Bag</a
+              >
+            </div>
+          </div>
+          <div class="lg:col-span-1">
+            <h4
+              class="font-sans text-[10px] sm:text-xs font-bold tracking-widest uppercase text-sekarsa-ochre mb-4 sm:mb-6"
+            >
+              Terhubung
+            </h4>
+            <div
+              class="flex flex-col space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-400"
+            >
+              <a
+                href="https://www.instagram.com/sekarsa.kopi?igsh=MWExbmZmMXZreTh3bQ=="
+                target="_blank"
+                class="hover:text-white transition"
+                >Instagram</a
+              >
+              <a
+                href="https://www.tiktok.com/@sekarsa.kopi"
+                target="_blank"
+                class="hover:text-white transition"
+                >TikTok</a
+              >
+              <a
+                href="https://wa.me/6282330636915"
+                target="_blank"
+                class="hover:text-white transition"
+                >WhatsApp</a
+              >
+            </div>
+          </div>
+        </div>
+        <div
+          class="flex flex-col md:flex-row justify-between items-center gap-3 pt-6 sm:pt-8 text-[10px] sm:text-xs text-gray-500 text-center md:text-left"
+        >
+          <p>&copy; 2026 Dibuat oleh J/D</p>
+          <a href="admin.html" class="underline hover:text-white transition"
+            >Admin Login</a
+          >
+        </div>
+      </div>
+    </footer>
+
+    <!-- Script Utama -->
+    <script defer src="main.js"></script>
+  </body>
+</html>

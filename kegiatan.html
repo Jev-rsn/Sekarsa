@@ -1,0 +1,882 @@
+<!doctype html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sekarsa Kopi - Dokumentasi Kegiatan</title>
+    <meta
+      name="description"
+      content="Dokumentasi kegiatan Tim KKN Universitas Negeri Malang di Desa Sukodono bersama masyarakat setempat."
+    />
+    <meta
+      name="author"
+      content="Tim KKN Sekarsa Kopi, Universitas Negeri Malang"
+    />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icons & Swiper CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"
+    />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "sekarsa-navy": "#1a3346",
+              "sekarsa-blue": "#4a6782",
+              "sekarsa-tan": "#d8aa83",
+              "sekarsa-ochre": "#a86c43",
+              "sekarsa-red": "#6b251a",
+              "sekarsa-dark": "#3b231d",
+            },
+            fontFamily: {
+              sans: ["Poppins", "sans-serif"],
+              serif: ["Playfair Display", "serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Panggil File CSS Terpisah -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="font-sans text-gray-800 antialiased overflow-x-hidden">
+    <!-- ========================================== -->
+    <!-- UI ELEMENTS UNIVERSAL                      -->
+    <!-- ========================================== -->
+    <div id="scroll-progress"></div>
+
+    <div id="success-toast" role="status" aria-live="polite">
+      <div
+        class="w-10 h-10 rounded-full bg-sekarsa-tan/20 flex items-center justify-center flex-shrink-0 text-sekarsa-tan"
+      >
+        <i class="fas fa-check"></i>
+      </div>
+      <div>
+        <p id="toast-title" class="font-bold text-sekarsa-tan text-sm mb-0.5">
+          Berhasil!
+        </p>
+        <p id="toast-message" class="text-xs text-gray-200">
+          Pesanan ditambahkan.
+        </p>
+      </div>
+    </div>
+
+    <button
+      id="floating-cart-btn"
+      class="fixed top-1/2 right-4 transform -translate-y-1/2 bg-sekarsa-navy text-sekarsa-tan p-4 rounded-full shadow-2xl z-[90] hidden items-center justify-center hover:scale-110 transition-transform border-2 border-sekarsa-tan"
+    >
+      <i class="fas fa-shopping-basket text-xl"></i>
+      <span
+        id="cart-badge"
+        class="absolute -top-2 -left-2 bg-sekarsa-red text-white font-bold text-xs w-6 h-6 rounded-full flex items-center justify-center shadow"
+        >0</span
+      >
+    </button>
+
+    <a
+      href="https://wa.me/6282330636915"
+      target="_blank"
+      class="wa-float"
+      aria-label="Hubungi via WhatsApp"
+    >
+      <i class="fab fa-whatsapp text-2xl"></i>
+      <span class="font-medium hidden sm:block">Chat WhatsApp</span>
+    </a>
+
+    <!-- Sidebar Keranjang -->
+    <div
+      id="cart-overlay"
+      class="fixed inset-0 bg-black/60 z-[95] hidden opacity-0 transition-opacity duration-300"
+    ></div>
+    <div
+      id="cart-sidebar"
+      class="fixed inset-y-0 right-0 w-full md:w-[400px] bg-white z-[100] transform translate-x-full transition-transform duration-300 shadow-2xl flex flex-col"
+    >
+      <div
+        class="p-6 border-b border-white/10 flex justify-between items-center bg-sekarsa-navy text-white"
+      >
+        <h3 class="text-xl font-serif font-bold flex items-center gap-3">
+          <i class="fas fa-shopping-basket text-sekarsa-tan"></i> Keranjang Anda
+        </h3>
+        <button
+          id="close-cart-btn"
+          class="text-gray-300 hover:text-white text-2xl transition outline-none"
+        >
+          &times;
+        </button>
+      </div>
+      <div
+        id="cart-items-list"
+        class="flex-grow overflow-y-auto p-6 space-y-4 bg-gray-50"
+      ></div>
+      <div
+        class="p-6 bg-white border-t border-gray-200 shadow-[0_-10px_20px_rgba(0,0,0,0.05)]"
+      >
+        <div class="flex justify-between items-center mb-6">
+          <span class="font-semibold text-gray-600">Total Biaya:</span>
+          <span
+            id="cart-total-price"
+            class="text-2xl font-bold text-sekarsa-red"
+            >Rp 0</span
+          >
+        </div>
+        <p class="text-xs text-gray-500 mb-3 text-center font-medium">
+          Pilih metode pemesanan (Marketplace):
+        </p>
+        <div class="grid grid-cols-1 gap-3">
+          <button
+            id="btn-checkout-web"
+            class="w-full bg-sekarsa-navy text-white py-3 rounded-xl font-bold hover:bg-sekarsa-dark transition flex items-center justify-center gap-2"
+          >
+            <i class="fas fa-envelope"></i> Hubungi via Web Form
+          </button>
+          <div class="grid grid-cols-2 gap-3">
+            <a
+              href="https://shopee.co.id/sekarsakopii"
+              target="_blank"
+              class="bg-[#EE4D2D] text-white py-3 rounded-xl font-bold hover:bg-orange-600 transition flex items-center justify-center gap-2"
+              ><i class="fas fa-shopping-bag"></i> Shopee</a
+            >
+            <a
+              href="https://www.tiktok.com/@sekarsa.kopi"
+              target="_blank"
+              class="bg-black text-white py-3 rounded-xl font-bold hover:bg-gray-800 transition flex items-center justify-center gap-2"
+              ><i class="fab fa-tiktok"></i> TikTok</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- NAVBAR UTAMA                               -->
+    <!-- ========================================== -->
+    <nav
+      id="main-navbar"
+      class="fixed w-full z-50 bg-white/95 backdrop-blur-sm shadow-md h-20"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full relative">
+        <div class="flex justify-between items-center h-full">
+          <a
+            href="index.html"
+            class="flex-shrink-0 flex items-center gap-2 sm:gap-3"
+          >
+            <img
+              src="elemen/Asset 9.png"
+              alt="Logo Sekarsa Kopi"
+              width="40"
+              height="40"
+              class="h-8 sm:h-10 w-auto object-contain"
+            />
+            <div
+              class="font-serif font-bold text-xl sm:text-2xl text-sekarsa-dark tracking-wide"
+            >
+              SEKARSA KOPI
+            </div>
+          </a>
+          <div class="nav-links hidden md:flex space-x-6 items-center">
+            <a
+              href="index.html"
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition"
+              >Beranda</a
+            >
+            <a
+              href="produk.html"
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition"
+              >Produk</a
+            >
+            <a
+              href="profil.html"
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition"
+              >Profil</a
+            >
+            <a
+              href="kegiatan.html"
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition active"
+              >Kegiatan</a
+            >
+            <a
+              href="artikel.html"
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition"
+              >Artikel</a
+            >
+            <button
+              onclick="
+                document
+                  .getElementById('tracking-modal')
+                  .classList.remove('hidden')
+              "
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition cursor-pointer"
+            >
+              Lacak Pesanan
+            </button>
+            <button
+              id="nav-btn-auth"
+              onclick="toggleAuthModal()"
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition cursor-pointer"
+            >
+              <i class="fas fa-user-circle mr-1"></i>
+              <span id="nav-auth-text">Login / Daftar</span>
+            </button>
+            <a
+              href="kontak.html"
+              class="btn-kontak bg-sekarsa-dark text-white px-5 py-2 rounded-full hover:bg-sekarsa-red transition font-medium"
+              >Kontak</a
+            >
+          </div>
+          <button
+            id="mobile-menu-btn"
+            class="md:hidden text-sekarsa-dark hover:text-sekarsa-ochre focus:outline-none text-2xl pr-2"
+          >
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+        <div
+          id="mobile-menu"
+          class="mobile-menu-links closed absolute top-20 left-0 w-full bg-white shadow-xl flex-col pb-6 pt-2 space-y-4 items-center md:hidden border-t border-gray-100"
+        >
+          <a
+            href="index.html"
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2"
+            >Beranda</a
+          >
+          <a
+            href="produk.html"
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2"
+            >Produk</a
+          >
+          <a
+            href="profil.html"
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2"
+            >Profil</a
+          >
+          <a
+            href="kegiatan.html"
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2 active"
+            >Kegiatan</a
+          >
+          <a
+            href="artikel.html"
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2"
+            >Artikel</a
+          >
+          <button
+            onclick="
+              document
+                .getElementById('tracking-modal')
+                .classList.remove('hidden');
+              document.getElementById('mobile-menu-btn').click();
+            "
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2 cursor-pointer"
+          >
+            Lacak Pesanan
+          </button>
+          <button
+            onclick="
+              toggleAuthModal();
+              document.getElementById('mobile-menu-btn').click();
+            "
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2 cursor-pointer"
+          >
+            <i class="fas fa-user-circle mr-1"></i>
+            <span id="mobile-auth-text">Login / Daftar</span>
+          </button>
+          <a
+            href="kontak.html"
+            class="btn-kontak bg-sekarsa-dark text-white px-8 py-2.5 rounded-full hover:bg-sekarsa-red transition font-medium mt-2 shadow-md"
+            >Kontak Kami</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <!-- ========================================== -->
+    <!-- KONTEN HALAMAN: KEGIATAN                   -->
+    <!-- ========================================== -->
+    <main
+      class="page bg-sekarsa-dark text-white bg-kontur-tanah bg-blend-overlay"
+    >
+      <div class="py-12 pt-28 min-h-screen relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <a
+            href="profil.html"
+            class="inline-flex items-center gap-2 text-sekarsa-tan hover:text-white mb-6 sm:mb-8 transition font-medium bg-white/10 px-3 sm:px-4 py-2 rounded-lg border border-white/20 text-sm sm:text-base"
+            ><i class="fas fa-arrow-left"></i> Kembali ke Profil</a
+          >
+          <div class="text-center mb-10 sm:mb-16 reveal">
+            <h2
+              class="text-3xl sm:text-4xl font-serif font-bold text-sekarsa-tan mb-4"
+            >
+              Dokumentasi Kegiatan 2026
+            </h2>
+            <div class="w-20 sm:w-24 h-1 bg-sekarsa-ochre mx-auto"></div>
+            <p
+              class="text-gray-300 mt-4 max-w-2xl mx-auto text-sm sm:text-base"
+            >
+              Kegiatan-kegiatan yang telah kami laksanakan bersama masyarakat
+              Desa Sukodono.
+            </p>
+          </div>
+
+          <div
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto reveal-grid"
+          >
+            <div
+              class="reveal bg-white/10 p-4 sm:p-5 rounded-2xl border border-white/20 backdrop-blur-sm"
+            >
+              <img
+                src="Kegiatan/test.jpeg"
+                loading="lazy"
+                decoding="async"
+                class="w-full h-40 object-cover rounded-xl mb-4 hover:scale-105 transition duration-300"
+                alt="Kegiatan 1"
+              />
+              <h4 class="font-bold text-base sm:text-lg text-white mb-2">
+                1. Sosialisasi Bank Sampah
+              </h4>
+              <p class="text-xs sm:text-sm text-gray-300">
+                Kegiatan edukatif untuk meningkatkan kepedulian masyarakat
+                terkait pengelolaan sampah melalui kebiasaan memilah dan
+                memanfaatkan sampah secara bijak.
+              </p>
+            </div>
+            <div
+              class="reveal bg-white/10 p-4 sm:p-5 rounded-2xl border border-white/20 backdrop-blur-sm"
+            >
+              <img
+                src="Kegiatan/Dhea Cakep.jpeg"
+                loading="lazy"
+                decoding="async"
+                class="w-full h-40 object-cover rounded-xl mb-4 hover:scale-105 transition duration-300"
+                alt="Kegiatan 2"
+              />
+              <h4 class="font-bold text-base sm:text-lg text-white mb-2">
+                2. Belajar Bersama Kelompok Tani
+              </h4>
+              <p class="text-xs sm:text-sm text-gray-300">
+                Kegiatan mempelajari perawatan kebun, pengenalan jenis kopi,
+                proses panen, dan pengolahan kopi hingga ke cangkir.
+              </p>
+            </div>
+            <div
+              class="reveal bg-white/10 p-4 sm:p-5 rounded-2xl border border-white/20 backdrop-blur-sm"
+            >
+              <img
+                src="Kegiatan/Jalal.jpeg"
+                loading="lazy"
+                decoding="async"
+                class="w-full h-40 object-cover rounded-xl mb-4 hover:scale-105 transition duration-300"
+                alt="Kegiatan 3"
+              />
+              <h4 class="font-bold text-base sm:text-lg text-white mb-2">
+                3. Sosialisasi Pemasaran Kopi
+              </h4>
+              <p class="text-xs sm:text-sm text-gray-300">
+                Kegiatan edukasi masyarakat terkait pemasaran kopi secara
+                digital untuk dapat menjangkau pasar yang luas.
+              </p>
+            </div>
+            <div
+              class="reveal bg-white/10 p-4 sm:p-5 rounded-2xl border border-white/20 backdrop-blur-sm"
+            >
+              <img
+                src="Kegiatan/Verera.jpeg"
+                loading="lazy"
+                decoding="async"
+                class="w-full h-40 object-cover rounded-xl mb-4 hover:scale-105 transition duration-300"
+                alt="Kegiatan 4"
+              />
+              <h4 class="font-bold text-base sm:text-lg text-white mb-2">
+                4. Belajar Bersama Sekarsa
+              </h4>
+              <p class="text-xs sm:text-sm text-gray-300">
+                Kegiatan belajar mengajar anak-anak desa terkait mata pelajaran,
+                keagamaan (mengaji), dan kreatifitas (crafting).
+              </p>
+            </div>
+            <div
+              class="reveal bg-white/10 p-4 sm:p-5 rounded-2xl border border-white/20 backdrop-blur-sm"
+            >
+              <img
+                src="Kegiatan/Haki.jpeg"
+                loading="lazy"
+                decoding="async"
+                class="w-full h-40 object-cover rounded-xl mb-4 hover:scale-105 transition duration-300"
+                alt="Kegiatan 5"
+              />
+              <h4 class="font-bold text-base sm:text-lg text-white mb-2">
+                5. Diba'an
+              </h4>
+              <p class="text-xs sm:text-sm text-gray-300">
+                Kegiatan rutin pembacaan sholawat dan doa bersama untuk
+                mempererat tali silaturahmi antarwarga.
+              </p>
+            </div>
+            <div
+              class="reveal bg-white/10 p-4 sm:p-5 rounded-2xl border border-white/20 backdrop-blur-sm"
+            >
+              <img
+                src="Kegiatan/Lala.jpeg"
+                loading="lazy"
+                decoding="async"
+                class="w-full h-40 object-cover rounded-xl mb-4 hover:scale-105 transition duration-300"
+                alt="Kegiatan 6"
+              />
+              <h4 class="font-bold text-base sm:text-lg text-white mb-2">
+                6. Tahlilan
+              </h4>
+              <p class="text-xs sm:text-sm text-gray-300">
+                Kegiatan doa bersama sekaligus memperkuat rasa kebersamaan
+                antarmasyarakat.
+              </p>
+            </div>
+            <div
+              class="reveal bg-white/10 p-4 sm:p-5 rounded-2xl border border-white/20 backdrop-blur-sm"
+            >
+              <img
+                src="Kegiatan/Reja.jpeg"
+                loading="lazy"
+                decoding="async"
+                class="w-full h-40 object-cover rounded-xl mb-4 hover:scale-105 transition duration-300"
+                alt="Kegiatan 7"
+              />
+              <h4 class="font-bold text-base sm:text-lg text-white mb-2">
+                7. MPLS SMP PGRI 05 Sukodono
+              </h4>
+              <p class="text-xs sm:text-sm text-gray-300">
+                Membantu kegiatan MPLS SMP PGRI 05 Sukodono dalam pemberian
+                materi "Bijak Bersosial Media dan Bullying", games, dan pentas
+                seni bersama FBD UB.
+              </p>
+            </div>
+            <div
+              class="reveal bg-white/10 p-4 sm:p-5 rounded-2xl border border-white/20 backdrop-blur-sm"
+            >
+              <img
+                src="Kegiatan/Meika.jpeg"
+                loading="lazy"
+                decoding="async"
+                class="w-full h-40 object-cover rounded-xl mb-4 hover:scale-105 transition duration-300"
+                alt="Kegiatan 8"
+              />
+              <h4 class="font-bold text-base sm:text-lg text-white mb-2">
+                8. Crafting
+              </h4>
+              <p class="text-xs sm:text-sm text-gray-300">
+                Kegiatan membuat gantungan kunci dari tali rami dan pipe cleaner
+                bersama anak-anak sekitar posko.
+              </p>
+            </div>
+            <div
+              class="reveal bg-white/10 p-4 sm:p-5 rounded-2xl border border-white/20 backdrop-blur-sm"
+            >
+              <img
+                src="Kegiatan/Davi.jpeg"
+                loading="lazy"
+                decoding="async"
+                class="w-full h-40 object-cover rounded-xl mb-4 hover:scale-105 transition duration-300"
+                alt="Kegiatan 9"
+              />
+              <h4 class="font-bold text-base sm:text-lg text-white mb-2">
+                9. Senam Pagi Bersama
+              </h4>
+              <p class="text-xs sm:text-sm text-gray-300">
+                Kegiatan senam pagi bersama warga desa dan anak-anak dalam
+                rangka menjaga kesehatan dan mempererat kebersamaan.
+              </p>
+            </div>
+            <div
+              class="reveal bg-white/10 p-4 sm:p-5 rounded-2xl border border-white/20 backdrop-blur-sm"
+            >
+              <img
+                src="Kegiatan/Syania.jpeg"
+                loading="lazy"
+                decoding="async"
+                class="w-full h-40 object-cover rounded-xl mb-4 hover:scale-105 transition duration-300"
+                alt="Kegiatan 10"
+              />
+              <h4 class="font-bold text-base sm:text-lg text-white mb-2">
+                10. Penutupan
+              </h4>
+              <p class="text-xs sm:text-sm text-gray-300">
+                Upacara penutupan sekaligus makan bersama sebagai pelepasan
+                bersama Tante Fatimah (pemilik posko) dan Bapak Anugrah (Kepala
+                Dusun Wonorejo).
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- MODAL POPUPS                               -->
+    <!-- ========================================== -->
+    <!-- Modal Lacak Pesanan -->
+    <div
+      id="tracking-modal"
+      class="hidden fixed inset-0 bg-black/60 z-[150] flex items-center justify-center backdrop-blur-sm transition-all"
+    >
+      <div
+        class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl w-[90%] max-w-md relative"
+      >
+        <button
+          onclick="
+            document.getElementById('tracking-modal').classList.add('hidden')
+          "
+          class="absolute top-4 right-4 text-gray-400 hover:text-sekarsa-red text-2xl transition outline-none"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+        <h3
+          class="font-serif text-2xl sm:text-3xl font-bold text-sekarsa-dark mb-2"
+        >
+          Lacak Pesanan
+        </h3>
+        <p class="text-xs sm:text-sm text-gray-500 mb-6">
+          Masukkan kode unik resi yang Anda dapatkan setelah checkout.
+        </p>
+        <input
+          type="text"
+          id="tracking-input"
+          placeholder="Contoh: SK-12345678"
+          class="w-full border border-gray-300 rounded-xl p-3 sm:p-4 outline-none focus:border-sekarsa-ochre focus:ring-2 focus:ring-sekarsa-ochre mb-4 bg-gray-50 text-sm"
+        />
+        <button
+          onclick="checkTracking()"
+          class="w-full bg-sekarsa-navy text-white py-3 sm:py-3.5 rounded-xl font-bold hover:bg-sekarsa-dark transition shadow-lg text-sm sm:text-base"
+        >
+          <i class="fas fa-search mr-2"></i>Cek Status
+        </button>
+        <div id="tracking-result" class="mt-6"></div>
+      </div>
+    </div>
+
+    <!-- Modal Autentikasi -->
+    <div
+      id="auth-modal"
+      class="hidden fixed inset-0 bg-black/60 z-[160] flex items-center justify-center backdrop-blur-sm transition-all"
+    >
+      <div
+        class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl w-[90%] max-w-md relative overflow-hidden"
+      >
+        <button
+          onclick="toggleAuthModal()"
+          class="absolute top-4 right-4 text-gray-400 hover:text-sekarsa-red text-2xl transition outline-none"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+
+        <div class="flex border-b border-gray-200 mb-6">
+          <button
+            id="tab-login"
+            onclick="switchAuthTab('login')"
+            class="flex-1 py-3 text-center font-bold text-sekarsa-ochre border-b-2 border-sekarsa-ochre outline-none"
+          >
+            Login
+          </button>
+          <button
+            id="tab-register"
+            onclick="switchAuthTab('register')"
+            class="flex-1 py-3 text-center font-medium text-gray-400 border-b-2 border-transparent hover:text-gray-600 outline-none"
+          >
+            Daftar
+          </button>
+        </div>
+
+        <form id="form-login" class="space-y-4 block">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1"
+              >Nomor Handphone</label
+            >
+            <input
+              type="text"
+              id="login-hp"
+              placeholder="Contoh: 081234..."
+              class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:border-sekarsa-ochre bg-gray-50 text-sm"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1"
+              >Password</label
+            >
+            <input
+              type="password"
+              id="login-pass"
+              placeholder="***"
+              class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:border-sekarsa-ochre bg-gray-50 text-sm"
+            />
+          </div>
+          <button
+            type="button"
+            onclick="prosesLogin(event)"
+            class="w-full bg-sekarsa-navy text-white py-3.5 rounded-xl font-bold hover:bg-sekarsa-dark transition shadow-lg mt-2 text-sm"
+          >
+            Masuk
+          </button>
+        </form>
+
+        <form id="form-register" class="space-y-4 hidden">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1"
+              >Nama Lengkap</label
+            >
+            <input
+              type="text"
+              id="reg-nama"
+              placeholder="Nama Anda..."
+              class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:border-sekarsa-ochre bg-gray-50 text-sm"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1"
+              >Nomor Handphone</label
+            >
+            <input
+              type="text"
+              id="reg-hp"
+              placeholder="Contoh: 081234..."
+              class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:border-sekarsa-ochre bg-gray-50 text-sm"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1"
+              >Password</label
+            >
+            <input
+              type="password"
+              id="reg-pass"
+              placeholder="Buat password..."
+              class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:border-sekarsa-ochre bg-gray-50 text-sm"
+            />
+          </div>
+          <button
+            type="button"
+            onclick="prosesDaftar(event)"
+            class="w-full bg-sekarsa-ochre text-white py-3.5 rounded-xl font-bold hover:bg-sekarsa-tan transition shadow-lg mt-2 text-sm"
+          >
+            Daftar & Simpan
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Profil -->
+    <div
+      id="profile-modal"
+      class="hidden fixed inset-0 bg-black/60 z-[160] flex items-center justify-center backdrop-blur-sm transition-all"
+    >
+      <div
+        class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl w-[90%] max-w-lg relative overflow-hidden flex flex-col max-h-[85vh]"
+      >
+        <button
+          onclick="
+            document.getElementById('profile-modal').classList.add('hidden')
+          "
+          class="absolute top-4 right-4 text-gray-400 hover:text-sekarsa-red text-2xl transition outline-none"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+        <h3
+          class="font-serif text-2xl font-bold text-sekarsa-dark mb-4 border-b pb-3"
+        >
+          Profil Saya
+        </h3>
+
+        <div
+          class="bg-sekarsa-navy/5 p-4 rounded-xl mb-6 flex justify-between items-center border border-sekarsa-tan/20"
+        >
+          <div>
+            <p class="text-[10px] sm:text-xs text-gray-500 mb-0.5">
+              Nama Lengkap
+            </p>
+            <p
+              id="profile-nama"
+              class="font-bold text-sekarsa-dark text-sm sm:text-base"
+            >
+              -
+            </p>
+            <p class="text-[10px] sm:text-xs text-gray-500 mt-2 mb-0.5">
+              Nomor Handphone
+            </p>
+            <p
+              id="profile-hp"
+              class="font-bold text-sekarsa-dark text-sm sm:text-base"
+            >
+              -
+            </p>
+          </div>
+          <button
+            onclick="prosesLogout()"
+            class="bg-red-50 text-red-600 px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm hover:bg-red-100 transition shadow-sm border border-red-200 flex items-center gap-2"
+          >
+            <i class="fas fa-sign-out-alt"></i> Keluar
+          </button>
+        </div>
+
+        <h4 class="font-bold text-sekarsa-dark mb-3 text-sm sm:text-base">
+          <i class="fas fa-history mr-2 text-sekarsa-ochre"></i>Riwayat Pesanan
+          Anda
+        </h4>
+        <div
+          id="profile-history-list"
+          class="flex-grow overflow-y-auto space-y-3 pr-2"
+          style="scrollbar-width: thin"
+        ></div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- FOOTER UNIVERSAL                           -->
+    <!-- ========================================== -->
+    <footer
+      class="bg-sekarsa-dark text-white pt-12 sm:pt-16 pb-6 sm:pb-8 border-t border-white/10 bg-kontur-tanah bg-blend-overlay"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 pb-8 sm:pb-12 border-b border-white/10"
+        >
+          <div class="lg:col-span-2 pr-0 md:pr-4">
+            <div class="flex items-center gap-3 mb-4 sm:mb-6">
+              <img
+                src="elemen/Asset 9.png"
+                alt="Logo Sekarsa Kopi"
+                loading="lazy"
+                decoding="async"
+                width="48"
+                height="48"
+                class="h-10 sm:h-12 w-auto object-contain invert brightness-0"
+              />
+              <div
+                class="font-serif font-bold text-xl sm:text-2xl tracking-wide"
+              >
+                SEKARSA KOPI
+              </div>
+            </div>
+            <p
+              class="text-xs sm:text-sm text-gray-400 max-w-sm leading-relaxed"
+            >
+              Unit usaha kopi dari tim KKN Universitas Negeri Malang di Desa
+              Sukodono. Merawat kembali kopi robusta lokal sebagai komoditas
+              unggulan dan identitas budaya masyarakat.
+            </p>
+          </div>
+          <div class="lg:col-span-1">
+            <h4
+              class="font-sans text-[10px] sm:text-xs font-bold tracking-widest uppercase text-sekarsa-ochre mb-4 sm:mb-6"
+            >
+              Jelajahi
+            </h4>
+            <div
+              class="flex flex-col space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-400"
+            >
+              <a href="index.html" class="hover:text-white transition"
+                >Beranda</a
+              >
+              <a href="produk.html" class="hover:text-white transition"
+                >Katalog Produk</a
+              >
+              <a href="profil.html" class="hover:text-white transition"
+                >Profil Tim</a
+              >
+              <a href="kegiatan.html" class="hover:text-white transition"
+                >Kegiatan</a
+              >
+              <a href="artikel.html" class="hover:text-white transition"
+                >Artikel</a
+              >
+              <a href="kontak.html" class="hover:text-white transition"
+                >Kontak Kami</a
+              >
+            </div>
+          </div>
+          <div class="lg:col-span-1">
+            <h4
+              class="font-sans text-[10px] sm:text-xs font-bold tracking-widest uppercase text-sekarsa-ochre mb-4 sm:mb-6"
+            >
+              Produk
+            </h4>
+            <div
+              class="flex flex-col space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-400"
+            >
+              <a href="produk.html" class="hover:text-white transition"
+                >Bubuk</a
+              >
+              <a href="produk.html" class="hover:text-white transition"
+                >Roast Beans</a
+              >
+              <a href="produk.html" class="hover:text-white transition"
+                >Green Beans</a
+              >
+              <a href="produk.html" class="hover:text-white transition"
+                >Drip Bag</a
+              >
+            </div>
+          </div>
+          <div class="lg:col-span-1">
+            <h4
+              class="font-sans text-[10px] sm:text-xs font-bold tracking-widest uppercase text-sekarsa-ochre mb-4 sm:mb-6"
+            >
+              Terhubung
+            </h4>
+            <div
+              class="flex flex-col space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-400"
+            >
+              <a
+                href="https://www.instagram.com/sekarsa.kopi?igsh=MWExbmZmMXZreTh3bQ=="
+                target="_blank"
+                class="hover:text-white transition"
+                >Instagram</a
+              >
+              <a
+                href="https://www.tiktok.com/@sekarsa.kopi"
+                target="_blank"
+                class="hover:text-white transition"
+                >TikTok</a
+              >
+              <a
+                href="https://wa.me/6282330636915"
+                target="_blank"
+                class="hover:text-white transition"
+                >WhatsApp</a
+              >
+            </div>
+          </div>
+        </div>
+        <div
+          class="flex flex-col md:flex-row justify-between items-center gap-3 pt-6 sm:pt-8 text-[10px] sm:text-xs text-gray-500 text-center md:text-left"
+        >
+          <p>&copy; 2026 Dibuat oleh J/D</p>
+          <a href="admin.html" class="underline hover:text-white transition"
+            >Admin Login</a
+          >
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts Khusus -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"
+    ></script>
+    <script defer src="main.js"></script>
+  </body>
+</html>

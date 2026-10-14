@@ -1,0 +1,1093 @@
+<!doctype html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sekarsa Kopi - Hubungi Kami</title>
+    <meta
+      name="description"
+      content="Hubungi Sekarsa Kopi untuk pemesanan, kemitraan, atau pertanyaan seputar produk kopi kami."
+    />
+    <meta
+      name="author"
+      content="Tim KKN Sekarsa Kopi, Universitas Negeri Malang"
+    />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icons & Swiper CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"
+    />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "sekarsa-navy": "#1a3346",
+              "sekarsa-blue": "#4a6782",
+              "sekarsa-tan": "#d8aa83",
+              "sekarsa-ochre": "#a86c43",
+              "sekarsa-red": "#6b251a",
+              "sekarsa-dark": "#3b231d",
+            },
+            fontFamily: {
+              sans: ["Poppins", "sans-serif"],
+              serif: ["Playfair Display", "serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Panggil File CSS Terpisah -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="font-sans text-gray-800 antialiased overflow-x-hidden">
+    <!-- ========================================== -->
+    <!-- UI ELEMENTS UNIVERSAL (Toast, Float, dll)  -->
+    <!-- ========================================== -->
+    <div id="scroll-progress"></div>
+
+    <div id="success-toast" role="status" aria-live="polite">
+      <div
+        class="w-10 h-10 rounded-full bg-sekarsa-tan/20 flex items-center justify-center flex-shrink-0 text-sekarsa-tan"
+      >
+        <i class="fas fa-check"></i>
+      </div>
+      <div>
+        <p id="toast-title" class="font-bold text-sekarsa-tan text-sm mb-0.5">
+          Berhasil!
+        </p>
+        <p id="toast-message" class="text-xs text-gray-200">
+          Pesanan ditambahkan.
+        </p>
+      </div>
+    </div>
+
+    <button
+      id="floating-cart-btn"
+      class="fixed top-1/2 right-4 transform -translate-y-1/2 bg-sekarsa-navy text-sekarsa-tan p-4 rounded-full shadow-2xl z-[90] hidden items-center justify-center hover:scale-110 transition-transform border-2 border-sekarsa-tan"
+    >
+      <i class="fas fa-shopping-basket text-xl"></i>
+      <span
+        id="cart-badge"
+        class="absolute -top-2 -left-2 bg-sekarsa-red text-white font-bold text-xs w-6 h-6 rounded-full flex items-center justify-center shadow"
+        >0</span
+      >
+    </button>
+
+    <a
+      href="https://wa.me/6282330636915"
+      target="_blank"
+      class="wa-float"
+      aria-label="Hubungi via WhatsApp"
+    >
+      <i class="fab fa-whatsapp text-2xl"></i>
+      <span class="font-medium hidden sm:block">Chat WhatsApp</span>
+    </a>
+
+    <!-- Sidebar Keranjang -->
+    <div
+      id="cart-overlay"
+      class="fixed inset-0 bg-black/60 z-[95] hidden opacity-0 transition-opacity duration-300"
+    ></div>
+    <div
+      id="cart-sidebar"
+      class="fixed inset-y-0 right-0 w-full md:w-[400px] bg-white z-[100] transform translate-x-full transition-transform duration-300 shadow-2xl flex flex-col"
+    >
+      <div
+        class="p-6 border-b border-white/10 flex justify-between items-center bg-sekarsa-navy text-white"
+      >
+        <h3 class="text-xl font-serif font-bold flex items-center gap-3">
+          <i class="fas fa-shopping-basket text-sekarsa-tan"></i> Keranjang Anda
+        </h3>
+        <button
+          id="close-cart-btn"
+          class="text-gray-300 hover:text-white text-2xl transition outline-none"
+        >
+          &times;
+        </button>
+      </div>
+      <div
+        id="cart-items-list"
+        class="flex-grow overflow-y-auto p-6 space-y-4 bg-gray-50"
+      ></div>
+      <div
+        class="p-6 bg-white border-t border-gray-200 shadow-[0_-10px_20px_rgba(0,0,0,0.05)]"
+      >
+        <div class="flex justify-between items-center mb-6">
+          <span class="font-semibold text-gray-600">Total Biaya:</span>
+          <span
+            id="cart-total-price"
+            class="text-2xl font-bold text-sekarsa-red"
+            >Rp 0</span
+          >
+        </div>
+        <p class="text-xs text-gray-500 mb-3 text-center font-medium">
+          Pilih metode pemesanan (Marketplace):
+        </p>
+        <div class="grid grid-cols-1 gap-3">
+          <button
+            id="btn-checkout-web"
+            class="w-full bg-sekarsa-navy text-white py-3 rounded-xl font-bold hover:bg-sekarsa-dark transition flex items-center justify-center gap-2"
+          >
+            <i class="fas fa-envelope"></i> Hubungi via Web Form
+          </button>
+          <div class="grid grid-cols-2 gap-3">
+            <a
+              href="https://shopee.co.id/sekarsakopii"
+              target="_blank"
+              class="bg-[#EE4D2D] text-white py-3 rounded-xl font-bold hover:bg-orange-600 transition flex items-center justify-center gap-2"
+              ><i class="fas fa-shopping-bag"></i> Shopee</a
+            >
+            <a
+              href="https://www.tiktok.com/@sekarsa.kopi"
+              target="_blank"
+              class="bg-black text-white py-3 rounded-xl font-bold hover:bg-gray-800 transition flex items-center justify-center gap-2"
+              ><i class="fab fa-tiktok"></i> TikTok</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- NAVBAR UTAMA                               -->
+    <!-- ========================================== -->
+    <nav
+      id="main-navbar"
+      class="fixed w-full z-50 bg-white/95 backdrop-blur-sm shadow-md h-20"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full relative">
+        <div class="flex justify-between items-center h-full">
+          <a
+            href="index.html"
+            class="flex-shrink-0 flex items-center gap-2 sm:gap-3"
+          >
+            <img
+              src="elemen/Asset 9.png"
+              alt="Logo Sekarsa Kopi"
+              width="40"
+              height="40"
+              class="h-8 sm:h-10 w-auto object-contain"
+            />
+            <div
+              class="font-serif font-bold text-xl sm:text-2xl text-sekarsa-dark tracking-wide"
+            >
+              SEKARSA KOPI
+            </div>
+          </a>
+          <div class="nav-links hidden md:flex space-x-6 items-center">
+            <a
+              href="index.html#beranda"
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition"
+              >Beranda</a
+            >
+            <a
+              href="index.html#produk"
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition"
+              >Produk</a
+            >
+            <a
+              href="index.html#profil"
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition"
+              >Profil</a
+            >
+            <a
+              href="index.html#artikel"
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition"
+              >Artikel</a
+            >
+            <button
+              onclick="
+                document
+                  .getElementById('tracking-modal')
+                  .classList.remove('hidden')
+              "
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition cursor-pointer"
+            >
+              Lacak Pesanan
+            </button>
+            <button
+              id="nav-btn-auth"
+              onclick="toggleAuthModal()"
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition cursor-pointer"
+            >
+              <i class="fas fa-user-circle mr-1"></i>
+              <span id="nav-auth-text">Login / Daftar</span>
+            </button>
+            <a
+              href="kontak.html"
+              class="btn-kontak bg-sekarsa-dark text-white px-5 py-2 rounded-full hover:bg-sekarsa-red transition font-medium active"
+              >Kontak</a
+            >
+          </div>
+          <button
+            id="mobile-menu-btn"
+            class="md:hidden text-sekarsa-dark hover:text-sekarsa-ochre focus:outline-none text-2xl pr-2"
+          >
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+        <div
+          id="mobile-menu"
+          class="mobile-menu-links closed absolute top-20 left-0 w-full bg-white shadow-xl flex-col pb-6 pt-2 space-y-4 items-center md:hidden border-t border-gray-100"
+        >
+          <a
+            href="index.html#beranda"
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2"
+            >Beranda</a
+          >
+          <a
+            href="index.html#produk"
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2"
+            >Produk</a
+          >
+          <a
+            href="index.html#profil"
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2"
+            >Profil</a
+          >
+          <a
+            href="index.html#kegiatan"
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2"
+            >Kegiatan</a
+          >
+          <a
+            href="index.html#artikel"
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2"
+            >Artikel</a
+          >
+          <button
+            onclick="
+              document
+                .getElementById('tracking-modal')
+                .classList.remove('hidden');
+              document.getElementById('mobile-menu-btn').click();
+            "
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2 cursor-pointer"
+          >
+            Lacak Pesanan
+          </button>
+          <button
+            onclick="
+              toggleAuthModal();
+              document.getElementById('mobile-menu-btn').click();
+            "
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2 cursor-pointer"
+          >
+            <i class="fas fa-user-circle mr-1"></i>
+            <span id="mobile-auth-text">Login / Daftar</span>
+          </button>
+          <a
+            href="kontak.html"
+            class="btn-kontak bg-sekarsa-dark text-white px-8 py-2.5 rounded-full hover:bg-sekarsa-red transition font-medium mt-2 shadow-md active"
+            >Kontak Kami</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <!-- ========================================== -->
+    <!-- KONTEN HALAMAN: KONTAK                     -->
+    <!-- ========================================== -->
+    <main class="page bg-kontur-tanah">
+      <div class="py-12 min-h-screen relative z-10 pt-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-10 sm:mb-12 reveal">
+            <h2
+              class="text-3xl sm:text-4xl font-serif font-bold text-sekarsa-dark mb-4"
+            >
+              Hubungi Kami
+            </h2>
+            <div class="w-20 sm:w-24 h-1 bg-sekarsa-ochre mx-auto"></div>
+            <p
+              class="text-gray-500 mt-4 max-w-2xl mx-auto text-sm sm:text-base"
+            >
+              Untuk pemesanan, kemitraan, atau pertanyaan seputar kopi Sukodono,
+              jangan ragu untuk menghubungi kami.
+            </p>
+          </div>
+
+          <div
+            class="reveal flex flex-col lg:flex-row gap-8 sm:gap-12 bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100"
+          >
+            <!-- Kolom Info Kontak Kiri -->
+            <div
+              class="lg:w-2/5 bg-sekarsa-navy text-white py-10 sm:py-16 px-6 sm:px-10 flex flex-col justify-between"
+            >
+              <div>
+                <h3
+                  class="text-2xl sm:text-3xl font-serif font-bold mb-6 sm:mb-8 text-sekarsa-tan text-center lg:text-left"
+                >
+                  Informasi Kontak
+                </h3>
+                <div class="space-y-5 sm:space-y-6">
+                  <div class="flex items-start gap-4">
+                    <div
+                      class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0"
+                    >
+                      <i
+                        class="fas fa-map-marker-alt text-sekarsa-tan text-lg sm:text-xl"
+                      ></i>
+                    </div>
+                    <div>
+                      <h5
+                        class="font-semibold text-gray-300 text-xs sm:text-sm"
+                      >
+                        Alamat
+                      </h5>
+                      <p class="text-sm sm:text-lg">
+                        Dusun Wonorejo, Desa Sukodono, Kec. Dampit, Kab. Malang
+                      </p>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-4">
+                    <div
+                      class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0"
+                    >
+                      <i
+                        class="fas fa-phone-alt text-sekarsa-tan text-lg sm:text-xl"
+                      ></i>
+                    </div>
+                    <div>
+                      <h5
+                        class="font-semibold text-gray-300 text-xs sm:text-sm"
+                      >
+                        Nomor Telepon
+                      </h5>
+                      <p class="text-sm sm:text-lg">+62 823 3063 6915</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-4">
+                    <div
+                      class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0"
+                    >
+                      <i
+                        class="fas fa-envelope text-sekarsa-tan text-lg sm:text-xl"
+                      ></i>
+                    </div>
+                    <div>
+                      <h5
+                        class="font-semibold text-gray-300 text-xs sm:text-sm"
+                      >
+                        Email
+                      </h5>
+                      <p class="text-sm sm:text-lg">sekarsa.kopi@gmail.com</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-4">
+                    <div
+                      class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0"
+                    >
+                      <i
+                        class="fas fa-clock text-sekarsa-tan text-lg sm:text-xl"
+                      ></i>
+                    </div>
+                    <div>
+                      <h5
+                        class="font-semibold text-gray-300 text-xs sm:text-sm"
+                      >
+                        Jam Layanan
+                      </h5>
+                      <p class="text-sm sm:text-lg">
+                        Senin - Jumat: 09.00 - 16.00 WIB
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="mt-8 rounded-2xl overflow-hidden shadow-xl border-4 border-white/10 relative w-full h-48 sm:h-64 md:h-80 group"
+                >
+                  <div
+                    class="absolute inset-0 bg-sekarsa-navy/20 pointer-events-none group-hover:bg-transparent transition duration-500 z-10"
+                  ></div>
+                  <iframe
+                    src="https://maps.google.com/maps?q=Dusun%20Wonorejo%2C%20Desa%20Sukodono%2C%20Dampit%2C%20Kabupaten%20Malang%2C%20Jawa%20Timur&output=embed"
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"
+                    title="Peta lokasi Sekarsa Kopi"
+                    class="absolute inset-0 w-full h-full border-0 filter grayscale-[20%] group-hover:grayscale-0 transition duration-500"
+                  ></iframe>
+                </div>
+              </div>
+              <div
+                class="mt-8 sm:mt-12 flex justify-center lg:justify-start gap-4"
+              >
+                <a
+                  href="https://www.instagram.com/sekarsa.kopi?igsh=MWExbmZmMXZreTh3bQ=="
+                  class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-sekarsa-tan hover:text-sekarsa-dark transition"
+                  aria-label="Instagram Sekarsa Kopi"
+                  ><i class="fab fa-instagram"></i
+                ></a>
+                <a
+                  href="https://www.tiktok.com/@sekarsa.kopi"
+                  class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-sekarsa-tan hover:text-sekarsa-dark transition"
+                  aria-label="TikTok Sekarsa Kopi"
+                  ><i class="fab fa-tiktok"></i
+                ></a>
+                <a
+                  href="https://wa.me/6282330636915"
+                  class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-sekarsa-tan hover:text-sekarsa-dark transition"
+                  aria-label="WhatsApp Sekarsa Kopi"
+                  ><i class="fab fa-whatsapp"></i
+                ></a>
+              </div>
+            </div>
+
+            <!-- Kolom Form Pemesanan Kanan -->
+            <div class="lg:w-3/5 py-10 sm:py-12 px-6 sm:px-10">
+              <h3
+                class="text-xl sm:text-2xl font-bold text-sekarsa-dark mb-4 sm:mb-6 text-center lg:text-left"
+              >
+                Kirim Pesan / Order
+              </h3>
+
+              <div
+                id="order-summary-box"
+                class="hidden bg-sekarsa-tan/10 border border-sekarsa-tan/50 rounded-xl p-4 sm:p-5 mb-6 shadow-sm"
+              >
+                <h4
+                  class="font-bold text-sekarsa-dark text-sm sm:text-base border-b border-sekarsa-tan/30 pb-2 mb-3"
+                >
+                  <i class="fas fa-shopping-bag mr-2"></i>Ringkasan Pesanan Anda
+                </h4>
+                <ul
+                  id="order-summary-items"
+                  class="space-y-3 text-xs sm:text-sm text-gray-700"
+                ></ul>
+                <div
+                  class="mt-4 pt-3 border-t border-sekarsa-tan/30 flex justify-between font-bold text-sekarsa-red text-sm sm:text-base"
+                >
+                  <span>Total Pembayaran:</span
+                  ><span id="order-summary-total">Rp 0</span>
+                </div>
+              </div>
+
+              <form id="contact-form" class="space-y-4 sm:space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                  <div>
+                    <label
+                      class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2"
+                      >Nama Lengkap</label
+                    >
+                    <input
+                      type="text"
+                      name="Nama"
+                      id="form-kontak-nama"
+                      required
+                      class="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-sekarsa-ochre focus:border-transparent outline-none bg-gray-50 transition text-sm sm:text-base"
+                      placeholder="Masukkan nama..."
+                    />
+                  </div>
+                  <div>
+                    <label
+                      class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2"
+                      >Nomor Telepon</label
+                    >
+                    <input
+                      type="tel"
+                      name="Telepon"
+                      id="form-kontak-hp"
+                      required
+                      class="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-sekarsa-ochre focus:border-transparent outline-none bg-gray-50 transition text-sm sm:text-base"
+                      placeholder="Contoh: 0812..."
+                    />
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                  <div>
+                    <label
+                      class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2"
+                      >Provinsi</label
+                    >
+                    <input
+                      type="text"
+                      name="Provinsi"
+                      required
+                      class="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-sekarsa-ochre focus:border-transparent outline-none bg-gray-50 transition text-sm sm:text-base"
+                      placeholder="Provinsi..."
+                    />
+                  </div>
+                  <div>
+                    <label
+                      class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2"
+                      >Kota/Kabupaten</label
+                    >
+                    <input
+                      type="text"
+                      name="Kota_Kabupaten"
+                      required
+                      class="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-sekarsa-ochre focus:border-transparent outline-none bg-gray-50 transition text-sm sm:text-base"
+                      placeholder="Kota atau Kab..."
+                    />
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                  <div>
+                    <label
+                      class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2"
+                      >Kecamatan</label
+                    >
+                    <input
+                      type="text"
+                      name="Kecamatan"
+                      required
+                      class="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-sekarsa-ochre focus:border-transparent outline-none bg-gray-50 transition text-sm sm:text-base"
+                      placeholder="Kecamatan..."
+                    />
+                  </div>
+                  <div>
+                    <label
+                      class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2"
+                      >Kode Pos</label
+                    >
+                    <input
+                      type="number"
+                      name="Kode_Pos"
+                      required
+                      class="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-sekarsa-ochre focus:border-transparent outline-none bg-gray-50 transition text-sm sm:text-base"
+                      placeholder="Kode Pos..."
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2"
+                    >Alamat Lengkap</label
+                  >
+                  <input
+                    type="text"
+                    name="Alamat_Lengkap"
+                    required
+                    class="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-sekarsa-ochre focus:border-transparent outline-none bg-gray-50 transition text-sm sm:text-base"
+                    placeholder="Nama jalan, gedung, blok, RT/RW..."
+                  />
+                </div>
+
+                <div>
+                  <label
+                    class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2"
+                    >Keperluan</label
+                  >
+                  <select
+                    id="keperluan-input"
+                    name="Keperluan"
+                    required
+                    class="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-sekarsa-ochre focus:border-transparent outline-none bg-gray-50 transition text-sm sm:text-base"
+                  >
+                    <option value="" disabled selected>
+                      Pilih keperluan...
+                    </option>
+                    <option value="Pemesanan">Pemesanan Kopi</option>
+                    <option value="Kerjasama">Kerjasama / Kemitraan</option>
+                    <option value="Tanya">Pertanyaan Umum</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label
+                    class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2"
+                    >Catatan / Pesan</label
+                  >
+                  <textarea
+                    id="pesan-input"
+                    name="Pesan"
+                    rows="4"
+                    class="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-sekarsa-ochre focus:border-transparent outline-none bg-gray-50 resize-none transition text-sm sm:text-base"
+                    placeholder="Tulis pesan atau pertanyaan Anda di sini..."
+                  ></textarea>
+                </div>
+
+                <button
+                  type="button"
+                  onclick="submitContactForm(event)"
+                  class="bg-sekarsa-dark text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-bold hover:bg-sekarsa-red transition w-full flex items-center justify-center gap-2 mt-2 sm:mt-4 text-sm sm:text-base"
+                >
+                  <i class="fas fa-paper-plane"></i> Kirim Pesan
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- MODAL POPUPS                               -->
+    <!-- ========================================== -->
+
+    <!-- Modal Lacak Pesanan -->
+    <div
+      id="tracking-modal"
+      class="hidden fixed inset-0 bg-black/60 z-[150] flex items-center justify-center backdrop-blur-sm transition-all"
+    >
+      <div
+        class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl w-[90%] max-w-md relative"
+      >
+        <button
+          onclick="
+            document.getElementById('tracking-modal').classList.add('hidden')
+          "
+          class="absolute top-4 right-4 text-gray-400 hover:text-sekarsa-red text-2xl transition outline-none"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+        <h3
+          class="font-serif text-2xl sm:text-3xl font-bold text-sekarsa-dark mb-2"
+        >
+          Lacak Pesanan
+        </h3>
+        <p class="text-xs sm:text-sm text-gray-500 mb-6">
+          Masukkan kode unik resi yang Anda dapatkan setelah checkout.
+        </p>
+        <input
+          type="text"
+          id="tracking-input"
+          placeholder="Contoh: SK-12345678"
+          class="w-full border border-gray-300 rounded-xl p-3 sm:p-4 outline-none focus:border-sekarsa-ochre focus:ring-2 focus:ring-sekarsa-ochre mb-4 bg-gray-50 text-sm"
+        />
+        <button
+          onclick="checkTracking()"
+          class="w-full bg-sekarsa-navy text-white py-3 sm:py-3.5 rounded-xl font-bold hover:bg-sekarsa-dark transition shadow-lg text-sm sm:text-base"
+        >
+          <i class="fas fa-search mr-2"></i>Cek Status
+        </button>
+        <div id="tracking-result" class="mt-6"></div>
+      </div>
+    </div>
+
+    <!-- Modal Autentikasi -->
+    <div
+      id="auth-modal"
+      class="hidden fixed inset-0 bg-black/60 z-[160] flex items-center justify-center backdrop-blur-sm transition-all"
+    >
+      <div
+        class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl w-[90%] max-w-md relative overflow-hidden"
+      >
+        <button
+          onclick="toggleAuthModal()"
+          class="absolute top-4 right-4 text-gray-400 hover:text-sekarsa-red text-2xl transition outline-none"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+
+        <div class="flex border-b border-gray-200 mb-6">
+          <button
+            id="tab-login"
+            onclick="switchAuthTab('login')"
+            class="flex-1 py-3 text-center font-bold text-sekarsa-ochre border-b-2 border-sekarsa-ochre outline-none"
+          >
+            Login
+          </button>
+          <button
+            id="tab-register"
+            onclick="switchAuthTab('register')"
+            class="flex-1 py-3 text-center font-medium text-gray-400 border-b-2 border-transparent hover:text-gray-600 outline-none"
+          >
+            Daftar
+          </button>
+        </div>
+
+        <form id="form-login" class="space-y-4 block">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1"
+              >Nomor Handphone</label
+            >
+            <input
+              type="text"
+              id="login-hp"
+              placeholder="Contoh: 081234..."
+              class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:border-sekarsa-ochre bg-gray-50 text-sm"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1"
+              >Password</label
+            >
+            <input
+              type="password"
+              id="login-pass"
+              placeholder="***"
+              class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:border-sekarsa-ochre bg-gray-50 text-sm"
+            />
+          </div>
+          <button
+            type="button"
+            onclick="prosesLogin(event)"
+            class="w-full bg-sekarsa-navy text-white py-3.5 rounded-xl font-bold hover:bg-sekarsa-dark transition shadow-lg mt-2 text-sm"
+          >
+            Masuk
+          </button>
+        </form>
+
+        <form id="form-register" class="space-y-4 hidden">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1"
+              >Nama Lengkap</label
+            >
+            <input
+              type="text"
+              id="reg-nama"
+              placeholder="Nama Anda..."
+              class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:border-sekarsa-ochre bg-gray-50 text-sm"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1"
+              >Nomor Handphone</label
+            >
+            <input
+              type="text"
+              id="reg-hp"
+              placeholder="Contoh: 081234..."
+              class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:border-sekarsa-ochre bg-gray-50 text-sm"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1"
+              >Password</label
+            >
+            <input
+              type="password"
+              id="reg-pass"
+              placeholder="Buat password..."
+              class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:border-sekarsa-ochre bg-gray-50 text-sm"
+            />
+          </div>
+          <button
+            type="button"
+            onclick="prosesDaftar(event)"
+            class="w-full bg-sekarsa-ochre text-white py-3.5 rounded-xl font-bold hover:bg-sekarsa-tan transition shadow-lg mt-2 text-sm"
+          >
+            Daftar & Simpan
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Profil -->
+    <div
+      id="profile-modal"
+      class="hidden fixed inset-0 bg-black/60 z-[160] flex items-center justify-center backdrop-blur-sm transition-all"
+    >
+      <div
+        class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl w-[90%] max-w-lg relative overflow-hidden flex flex-col max-h-[85vh]"
+      >
+        <button
+          onclick="
+            document.getElementById('profile-modal').classList.add('hidden')
+          "
+          class="absolute top-4 right-4 text-gray-400 hover:text-sekarsa-red text-2xl transition outline-none"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+        <h3
+          class="font-serif text-2xl font-bold text-sekarsa-dark mb-4 border-b pb-3"
+        >
+          Profil Saya
+        </h3>
+
+        <div
+          class="bg-sekarsa-navy/5 p-4 rounded-xl mb-6 flex justify-between items-center border border-sekarsa-tan/20"
+        >
+          <div>
+            <p class="text-[10px] sm:text-xs text-gray-500 mb-0.5">
+              Nama Lengkap
+            </p>
+            <p
+              id="profile-nama"
+              class="font-bold text-sekarsa-dark text-sm sm:text-base"
+            >
+              -
+            </p>
+            <p class="text-[10px] sm:text-xs text-gray-500 mt-2 mb-0.5">
+              Nomor Handphone
+            </p>
+            <p
+              id="profile-hp"
+              class="font-bold text-sekarsa-dark text-sm sm:text-base"
+            >
+              -
+            </p>
+          </div>
+          <button
+            onclick="prosesLogout()"
+            class="bg-red-50 text-red-600 px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm hover:bg-red-100 transition shadow-sm border border-red-200 flex items-center gap-2"
+          >
+            <i class="fas fa-sign-out-alt"></i> Keluar
+          </button>
+        </div>
+
+        <h4 class="font-bold text-sekarsa-dark mb-3 text-sm sm:text-base">
+          <i class="fas fa-history mr-2 text-sekarsa-ochre"></i>Riwayat Pesanan
+          Anda
+        </h4>
+        <div
+          id="profile-history-list"
+          class="flex-grow overflow-y-auto space-y-3 pr-2"
+          style="scrollbar-width: thin"
+        ></div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- FOOTER UNIVERSAL                           -->
+    <!-- ========================================== -->
+    <footer
+      class="bg-sekarsa-dark text-white pt-12 sm:pt-16 pb-6 sm:pb-8 border-t border-white/10 bg-kontur-tanah bg-blend-overlay"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 pb-8 sm:pb-12 border-b border-white/10"
+        >
+          <div class="lg:col-span-2 pr-0 md:pr-4">
+            <div class="flex items-center gap-3 mb-4 sm:mb-6">
+              <img
+                src="elemen/Asset 9.png"
+                alt="Logo Sekarsa Kopi"
+                loading="lazy"
+                decoding="async"
+                width="48"
+                height="48"
+                class="h-10 sm:h-12 w-auto object-contain invert brightness-0"
+              />
+              <div
+                class="font-serif font-bold text-xl sm:text-2xl tracking-wide"
+              >
+                SEKARSA KOPI
+              </div>
+            </div>
+            <p
+              class="text-xs sm:text-sm text-gray-400 max-w-sm leading-relaxed"
+            >
+              Unit usaha kopi dari tim KKN Universitas Negeri Malang di Desa
+              Sukodono. Merawat kembali kopi robusta lokal sebagai komoditas
+              unggulan dan identitas budaya masyarakat.
+            </p>
+          </div>
+          <div class="lg:col-span-1">
+            <h4
+              class="font-sans text-[10px] sm:text-xs font-bold tracking-widest uppercase text-sekarsa-ochre mb-4 sm:mb-6"
+            >
+              Jelajahi
+            </h4>
+            <div
+              class="flex flex-col space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-400"
+            >
+              <a href="index.html#beranda" class="hover:text-white transition"
+                >Beranda</a
+              >
+              <a href="index.html#produk" class="hover:text-white transition"
+                >Katalog Produk</a
+              >
+              <a href="index.html#profil" class="hover:text-white transition"
+                >Profil Tim</a
+              >
+              <a href="index.html#kegiatan" class="hover:text-white transition"
+                >Kegiatan</a
+              >
+              <a href="index.html#artikel" class="hover:text-white transition"
+                >Artikel</a
+              >
+              <a href="kontak.html" class="hover:text-white transition"
+                >Kontak Kami</a
+              >
+            </div>
+          </div>
+          <div class="lg:col-span-1">
+            <h4
+              class="font-sans text-[10px] sm:text-xs font-bold tracking-widest uppercase text-sekarsa-ochre mb-4 sm:mb-6"
+            >
+              Produk
+            </h4>
+            <div
+              class="flex flex-col space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-400"
+            >
+              <a href="index.html#produk" class="hover:text-white transition"
+                >Bubuk</a
+              >
+              <a href="index.html#produk" class="hover:text-white transition"
+                >Roast Beans</a
+              >
+              <a href="index.html#produk" class="hover:text-white transition"
+                >Green Beans</a
+              >
+              <a href="index.html#produk" class="hover:text-white transition"
+                >Drip Bag</a
+              >
+            </div>
+          </div>
+          <div class="lg:col-span-1">
+            <h4
+              class="font-sans text-[10px] sm:text-xs font-bold tracking-widest uppercase text-sekarsa-ochre mb-4 sm:mb-6"
+            >
+              Terhubung
+            </h4>
+            <div
+              class="flex flex-col space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-400"
+            >
+              <a
+                href="https://www.instagram.com/sekarsa.kopi?igsh=MWExbmZmMXZreTh3bQ=="
+                target="_blank"
+                class="hover:text-white transition"
+                >Instagram</a
+              >
+              <a
+                href="https://www.tiktok.com/@sekarsa.kopi"
+                target="_blank"
+                class="hover:text-white transition"
+                >TikTok</a
+              >
+              <a
+                href="https://wa.me/6282330636915"
+                target="_blank"
+                class="hover:text-white transition"
+                >WhatsApp</a
+              >
+            </div>
+          </div>
+        </div>
+        <div
+          class="flex flex-col md:flex-row justify-between items-center gap-3 pt-6 sm:pt-8 text-[10px] sm:text-xs text-gray-500 text-center md:text-left"
+        >
+          <p>&copy; 2026 Dibuat oleh J/D</p>
+          <a href="admin.html" class="underline hover:text-white transition"
+            >Admin Login</a
+          >
+        </div>
+      </div>
+    </footer>
+
+    <!-- BARIS PEMANGGILAN FILE MAIN.JS YANG DITAMBAHKAN -->
+    <script defer src="main.js"></script>
+
+    <!-- Script Khusus Halaman Kontak: Auto-fill & Tampil Pesanan -->
+    <script>
+      // 1. Buat Fungsi Mandiri untuk Merender Ulang Ringkasan Pesanan
+      function updateOrderSummary() {
+        const summaryBox = document.getElementById("order-summary-box");
+        const summaryItemsContainer = document.getElementById(
+          "order-summary-items",
+        );
+        const summaryTotalElement = document.getElementById(
+          "order-summary-total",
+        );
+        const keperluanInput = document.getElementById("keperluan-input");
+
+        // Mengambil cart dari variabel global main.js (jika ada) atau dari localStorage
+        let currentCart = {};
+        if (typeof cart !== "undefined" && Object.keys(cart).length > 0) {
+          currentCart = cart;
+        } else {
+          try {
+            currentCart = JSON.parse(localStorage.getItem("tempCart")) || {};
+            if (typeof cart !== "undefined") cart = currentCart; // Mensinkronkan memori
+          } catch (e) {}
+        }
+
+        let grandTotal = 0;
+        if (summaryItemsContainer) summaryItemsContainer.innerHTML = "";
+
+        // Kalkulasi Data Keranjang
+        if (Object.keys(currentCart).length > 0) {
+          for (const cartKey in currentCart) {
+            const item = currentCart[cartKey];
+            if (item.qty > 0) {
+              const subtotal = item.price * item.qty;
+              grandTotal += subtotal;
+
+              let varianText = [];
+              if (item.bentuk) varianText.push(item.bentuk);
+              if (item.size) varianText.push(item.size);
+              if (item.roast) varianText.push(item.roast);
+              const varianStr =
+                varianText.length > 0 ? `(${varianText.join(", ")})` : "";
+
+              if (summaryItemsContainer) {
+                summaryItemsContainer.innerHTML += `
+                <li class="flex justify-between items-start border-b border-gray-100 pb-2">
+                    <div>
+                        <span class="font-bold text-sekarsa-navy">${item.qty}x ${item.name}</span> <br> 
+                        <span class="text-[10px] sm:text-xs text-gray-500">${varianStr}</span>
+                    </div>
+                    <span class="font-semibold text-sekarsa-red">${typeof formatRupiah !== "undefined" ? formatRupiah(subtotal) : "Rp " + subtotal}</span>
+                </li>`;
+              }
+            }
+          }
+        }
+
+        // 2. Logika Menyembunyikan Card Jika Kosong
+        if (grandTotal > 0) {
+          if (summaryTotalElement)
+            summaryTotalElement.innerText =
+              typeof formatRupiah !== "undefined"
+                ? formatRupiah(grandTotal)
+                : "Rp " + grandTotal;
+          if (summaryBox) summaryBox.classList.remove("hidden");
+          if (keperluanInput) keperluanInput.value = "Pemesanan";
+        } else {
+          if (summaryBox) summaryBox.classList.add("hidden");
+          if (keperluanInput) keperluanInput.value = "";
+        }
+      }
+
+      // Menjalankan fungsi autofill dan inisiasi pertama kali saat halaman load
+      window.addEventListener("load", function () {
+        const currentUser = JSON.parse(localStorage.getItem("userSession"));
+        if (currentUser) {
+          const form = document.getElementById("contact-form");
+          if (form) {
+            const namaInput = form.querySelector('[name="Nama"]');
+            const teleponInput = form.querySelector('[name="Telepon"]');
+            if (namaInput) {
+              namaInput.value = currentUser.nama;
+              namaInput.setAttribute("readonly", true);
+              namaInput.classList.add(
+                "bg-gray-200",
+                "cursor-not-allowed",
+                "text-gray-500",
+              );
+            }
+            if (teleponInput) {
+              teleponInput.value = currentUser.hp;
+              teleponInput.setAttribute("readonly", true);
+              teleponInput.classList.add(
+                "bg-gray-200",
+                "cursor-not-allowed",
+                "text-gray-500",
+              );
+            }
+          }
+        }
+
+        setTimeout(() => {
+          updateOrderSummary();
+        }, 500);
+      });
+
+      // 3. Pasang Pendengar Event (Menangkap sinyal yang dikirim main.js)
+      document.addEventListener("cartUpdated", updateOrderSummary);
+    </script>
+  </body>
+</html>

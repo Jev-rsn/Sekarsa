@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portal Masuk - Sekarsa Kopi</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { "sekarsa-tan": "#d8aa83", "sekarsa-dark": "#3b231d" },
+            fontFamily: {
+              sans: ["Poppins", "sans-serif"],
+              serif: ["Playfair Display", "serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        margin: 0;
+        background: radial-gradient(
+          circle at 50% 30%,
+          #2a4155 0%,
+          #1a3346 55%,
+          #3b231d 100%
+        );
+        color: white;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .splash-logo-btn {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px auto;
+      }
+      .splash-logo-btn img {
+        width: 60px;
+        height: 60px;
+        object-fit: contain;
+        z-index: 2;
+        filter: drop-shadow(0 0 15px rgba(216, 170, 131, 0.8));
+      }
+      .splash-ring-outer {
+        position: absolute;
+        inset: 0;
+        border: 3px dashed rgba(216, 170, 131, 0.45);
+        border-top-color: #d8aa83;
+        border-radius: 50%;
+        animation: spinClockwise 4s linear infinite;
+        z-index: 1;
+      }
+      .splash-ring-inner {
+        position: absolute;
+        inset: -8px;
+        border: 2px solid rgba(168, 108, 67, 0.3);
+        border-bottom-color: #a86c43;
+        border-radius: 50%;
+        animation: spinCounterClockwise 2.5s linear infinite;
+        z-index: 1;
+      }
+      @keyframes spinClockwise {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes spinCounterClockwise {
+        100% {
+          transform: rotate(-360deg);
+        }
+      }
+    </style>
+  </head>
+  <body class="font-sans antialiased p-4">
+    <div class="w-full max-w-md mx-auto flex flex-col items-center">
+      <div class="splash-logo-btn cursor-default pointer-events-none">
+        <div class="splash-ring-inner"></div>
+        <div class="splash-ring-outer"></div>
+        <img
+          src="elemen/Asset 9.png"
+          alt="Logo Sekarsa Kopi"
+          onerror="
+            this.src = 'https://cdn-icons-png.flaticon.com/512/924/924514.png'
+          "
+        />
+      </div>
+      <h1
+        class="font-serif text-2xl sm:text-3xl font-bold tracking-widest mb-1 text-center"
+      >
+        SEKARSA KOPI
+      </h1>
+      <p
+        class="text-sekarsa-tan text-[10px] sm:text-xs tracking-[0.2em] uppercase mb-6 sm:mb-8 text-center"
+      >
+        Desa Sukodono • Dampit
+      </p>
+
+      <!-- Kotak Form Login -->
+      <div
+        class="bg-white/10 backdrop-blur-md border border-white/20 p-6 sm:p-8 rounded-[2rem] shadow-2xl w-full"
+      >
+        <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+          <div>
+            <label
+              class="block text-[10px] sm:text-xs font-semibold text-gray-300 mb-1.5 tracking-widest uppercase"
+              >Username Admin</label
+            >
+            <input
+              type="text"
+              id="login-user"
+              class="w-full bg-white/5 border border-white/20 text-white rounded-xl p-3.5 outline-none focus:border-sekarsa-tan transition text-sm"
+              required
+              placeholder="Masukkan username"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-[10px] sm:text-xs font-semibold text-gray-300 mb-1.5 tracking-widest uppercase"
+              >Password Admin</label
+            >
+            <input
+              type="password"
+              id="login-pass"
+              class="w-full bg-white/5 border border-white/20 text-white rounded-xl p-3.5 outline-none focus:border-sekarsa-tan transition text-sm"
+              required
+              placeholder="••••••••"
+            />
+          </div>
+          <div
+            id="login-error"
+            class="text-red-300 text-xs hidden text-center font-semibold bg-red-900/40 py-2.5 rounded-lg border border-red-500/50"
+          >
+            Username atau Password salah!
+          </div>
+
+          <button
+            type="submit"
+            class="w-full bg-sekarsa-tan text-sekarsa-dark py-3.5 rounded-xl font-bold hover:bg-white hover:scale-[1.02] transition-all shadow-lg mt-2 flex justify-center items-center gap-2 text-sm"
+          >
+            <i class="fas fa-sign-in-alt"></i> Masuk Dashboard
+          </button>
+        </form>
+
+        <div
+          class="mt-6 flex items-center justify-center gap-4 text-gray-400 text-[10px] font-bold tracking-widest"
+        >
+          <span class="h-px bg-white/20 flex-grow"></span><span>ATAU</span
+          ><span class="h-px bg-white/20 flex-grow"></span>
+        </div>
+
+        <button
+          onclick="window.location.href = 'index.html'"
+          class="w-full mt-6 border border-white/30 text-white py-3.5 rounded-xl font-bold hover:bg-white/10 transition-all flex justify-center items-center gap-2 text-sm"
+        >
+          <i class="fas fa-home text-lg"></i> Kembali ke Beranda Utama
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // Cek jika sudah login, langsung lempar ke admin.html
+      if (localStorage.getItem("isAdminLoggedIn") === "true") {
+        window.location.href = "admin.html";
+      }
+
+      function handleLogin(e) {
+        e.preventDefault();
+        const user = document.getElementById("login-user").value;
+        const pass = document.getElementById("login-pass").value;
+
+        if (user === "admin" && pass === "admin123") {
+          localStorage.setItem("isAdminLoggedIn", "true");
+          window.location.href = "admin.html";
+        } else {
+          document.getElementById("login-error").classList.remove("hidden");
+        }
+      }
+    </script>
+  </body>
+</html>

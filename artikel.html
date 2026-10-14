@@ -1,0 +1,1195 @@
+<!doctype html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sekarsa Kopi - Artikel & Sejarah</title>
+    <meta
+      name="description"
+      content="Eksplorasi cerita, sejarah, dan pengetahuan seputar kopi robusta & arabika dari Dusun Wonorejo, Desa Sukodono."
+    />
+    <meta
+      name="author"
+      content="Tim KKN Sekarsa Kopi, Universitas Negeri Malang"
+    />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icons & Swiper CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"
+    />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "sekarsa-navy": "#1a3346",
+              "sekarsa-blue": "#4a6782",
+              "sekarsa-tan": "#d8aa83",
+              "sekarsa-ochre": "#a86c43",
+              "sekarsa-red": "#6b251a",
+              "sekarsa-dark": "#3b231d",
+            },
+            fontFamily: {
+              sans: ["Poppins", "sans-serif"],
+              serif: ["Playfair Display", "serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Panggil File CSS Terpisah -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="font-sans text-gray-800 antialiased overflow-x-hidden">
+    <!-- ========================================== -->
+    <!-- UI ELEMENTS UNIVERSAL (Toast, Float, dll)  -->
+    <!-- ========================================== -->
+    <div id="scroll-progress"></div>
+
+    <div id="success-toast" role="status" aria-live="polite">
+      <div
+        class="w-10 h-10 rounded-full bg-sekarsa-tan/20 flex items-center justify-center flex-shrink-0 text-sekarsa-tan"
+      >
+        <i class="fas fa-check"></i>
+      </div>
+      <div>
+        <p id="toast-title" class="font-bold text-sekarsa-tan text-sm mb-0.5">
+          Berhasil!
+        </p>
+        <p id="toast-message" class="text-xs text-gray-200">
+          Pesanan ditambahkan.
+        </p>
+      </div>
+    </div>
+
+    <button
+      id="floating-cart-btn"
+      class="fixed top-1/2 right-4 transform -translate-y-1/2 bg-sekarsa-navy text-sekarsa-tan p-4 rounded-full shadow-2xl z-[90] hidden items-center justify-center hover:scale-110 transition-transform border-2 border-sekarsa-tan"
+    >
+      <i class="fas fa-shopping-basket text-xl"></i>
+      <span
+        id="cart-badge"
+        class="absolute -top-2 -left-2 bg-sekarsa-red text-white font-bold text-xs w-6 h-6 rounded-full flex items-center justify-center shadow"
+        >0</span
+      >
+    </button>
+
+    <a
+      href="https://wa.me/6282330636915"
+      target="_blank"
+      class="wa-float"
+      aria-label="Hubungi via WhatsApp"
+    >
+      <i class="fab fa-whatsapp text-2xl"></i>
+      <span class="font-medium hidden sm:block">Chat WhatsApp</span>
+    </a>
+
+    <!-- Custom Share Modal Khusus Desktop/PC -->
+    <div
+      id="share-overlay"
+      class="fixed inset-0 bg-black/50 z-[105] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm"
+    ></div>
+    <div
+      id="share-modal"
+      class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl z-[110] w-[90%] max-w-md p-6 sm:p-8 hidden opacity-0 transition-all duration-300 scale-95"
+    >
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-serif font-bold text-sekarsa-dark">
+          Bagikan ke Teman
+        </h3>
+        <button
+          id="close-share-btn"
+          class="text-gray-400 hover:text-sekarsa-red text-2xl transition outline-none"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <p
+        id="share-modal-title"
+        class="text-sm text-gray-600 mb-6 line-clamp-2"
+      ></p>
+      <div class="grid grid-cols-4 gap-4 mb-6">
+        <a
+          id="share-wa"
+          href="#"
+          target="_blank"
+          class="flex flex-col items-center gap-2 group"
+        >
+          <div
+            class="w-12 h-12 rounded-full bg-[#25D366] text-white flex items-center justify-center text-xl group-hover:scale-110 transition shadow-md"
+          >
+            <i class="fab fa-whatsapp"></i>
+          </div>
+          <span class="text-[10px] font-semibold text-gray-600">WhatsApp</span>
+        </a>
+        <a
+          id="share-fb"
+          href="#"
+          target="_blank"
+          class="flex flex-col items-center gap-2 group"
+        >
+          <div
+            class="w-12 h-12 rounded-full bg-[#1877F2] text-white flex items-center justify-center text-xl group-hover:scale-110 transition shadow-md"
+          >
+            <i class="fab fa-facebook-f"></i>
+          </div>
+          <span class="text-[10px] font-semibold text-gray-600">Facebook</span>
+        </a>
+        <a
+          id="share-x"
+          href="#"
+          target="_blank"
+          class="flex flex-col items-center gap-2 group"
+        >
+          <div
+            class="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center text-xl group-hover:scale-110 transition shadow-md"
+          >
+            <i class="fab fa-x-twitter"></i>
+          </div>
+          <span class="text-[10px] font-semibold text-gray-600"
+            >Twitter (X)</span
+          >
+        </a>
+        <button
+          id="share-copy"
+          class="flex flex-col items-center gap-2 group outline-none"
+        >
+          <div
+            class="w-12 h-12 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center text-xl group-hover:scale-110 group-hover:bg-sekarsa-ochre group-hover:text-white transition shadow-md"
+          >
+            <i class="fas fa-link"></i>
+          </div>
+          <span class="text-[10px] font-semibold text-gray-600"
+            >Salin Link</span
+          >
+        </button>
+      </div>
+      <div
+        class="bg-gray-50 rounded-xl p-3 flex items-center border border-gray-200"
+      >
+        <input
+          type="text"
+          id="share-url-input"
+          class="bg-transparent text-xs text-gray-500 w-full outline-none"
+          readonly
+        />
+      </div>
+    </div>
+
+    <!-- Sidebar Keranjang -->
+    <div
+      id="cart-overlay"
+      class="fixed inset-0 bg-black/60 z-[95] hidden opacity-0 transition-opacity duration-300"
+    ></div>
+    <div
+      id="cart-sidebar"
+      class="fixed inset-y-0 right-0 w-full md:w-[400px] bg-white z-[100] transform translate-x-full transition-transform duration-300 shadow-2xl flex flex-col"
+    >
+      <div
+        class="p-6 border-b border-white/10 flex justify-between items-center bg-sekarsa-navy text-white"
+      >
+        <h3 class="text-xl font-serif font-bold flex items-center gap-3">
+          <i class="fas fa-shopping-basket text-sekarsa-tan"></i> Keranjang Anda
+        </h3>
+        <button
+          id="close-cart-btn"
+          class="text-gray-300 hover:text-white text-2xl transition outline-none"
+        >
+          &times;
+        </button>
+      </div>
+      <div
+        id="cart-items-list"
+        class="flex-grow overflow-y-auto p-6 space-y-4 bg-gray-50"
+      ></div>
+      <div
+        class="p-6 bg-white border-t border-gray-200 shadow-[0_-10px_20px_rgba(0,0,0,0.05)]"
+      >
+        <div class="flex justify-between items-center mb-6">
+          <span class="font-semibold text-gray-600">Total Biaya:</span>
+          <span
+            id="cart-total-price"
+            class="text-2xl font-bold text-sekarsa-red"
+            >Rp 0</span
+          >
+        </div>
+        <p class="text-xs text-gray-500 mb-3 text-center font-medium">
+          Pilih metode pemesanan (Marketplace):
+        </p>
+        <div class="grid grid-cols-1 gap-3">
+          <button
+            id="btn-checkout-web"
+            class="w-full bg-sekarsa-navy text-white py-3 rounded-xl font-bold hover:bg-sekarsa-dark transition flex items-center justify-center gap-2"
+          >
+            <i class="fas fa-envelope"></i> Hubungi via Web Form
+          </button>
+          <div class="grid grid-cols-2 gap-3">
+            <a
+              href="https://shopee.co.id/sekarsakopii"
+              target="_blank"
+              class="bg-[#EE4D2D] text-white py-3 rounded-xl font-bold hover:bg-orange-600 transition flex items-center justify-center gap-2"
+              ><i class="fas fa-shopping-bag"></i> Shopee</a
+            >
+            <a
+              href="https://www.tiktok.com/@sekarsa.kopi"
+              target="_blank"
+              class="bg-black text-white py-3 rounded-xl font-bold hover:bg-gray-800 transition flex items-center justify-center gap-2"
+              ><i class="fab fa-tiktok"></i> TikTok</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- NAVBAR UTAMA                               -->
+    <!-- ========================================== -->
+    <nav
+      id="main-navbar"
+      class="fixed w-full z-50 bg-white/95 backdrop-blur-sm shadow-md h-20"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full relative">
+        <div class="flex justify-between items-center h-full">
+          <a
+            href="index.html"
+            class="flex-shrink-0 flex items-center gap-2 sm:gap-3"
+          >
+            <img
+              src="elemen/Asset 9.png"
+              alt="Logo Sekarsa Kopi"
+              width="40"
+              height="40"
+              class="h-8 sm:h-10 w-auto object-contain"
+            />
+            <div
+              class="font-serif font-bold text-xl sm:text-2xl text-sekarsa-dark tracking-wide"
+            >
+              SEKARSA KOPI
+            </div>
+          </a>
+          <div class="nav-links hidden md:flex space-x-6 items-center">
+            <a
+              href="index.html"
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition"
+              >Beranda</a
+            >
+            <a
+              href="produk.html"
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition"
+              >Produk</a
+            >
+            <a
+              href="profil.html"
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition"
+              >Profil</a
+            >
+            <a
+              href="artikel.html"
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition active"
+              >Artikel</a
+            >
+            <button
+              onclick="
+                document
+                  .getElementById('tracking-modal')
+                  .classList.remove('hidden')
+              "
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition cursor-pointer"
+            >
+              Lacak Pesanan
+            </button>
+            <button
+              id="nav-btn-auth"
+              onclick="toggleAuthModal()"
+              class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium transition cursor-pointer"
+            >
+              <i class="fas fa-user-circle mr-1"></i>
+              <span id="nav-auth-text">Login / Daftar</span>
+            </button>
+            <a
+              href="kontak.html"
+              class="btn-kontak bg-sekarsa-dark text-white px-5 py-2 rounded-full hover:bg-sekarsa-red transition font-medium"
+              >Kontak</a
+            >
+          </div>
+          <button
+            id="mobile-menu-btn"
+            class="md:hidden text-sekarsa-dark hover:text-sekarsa-ochre focus:outline-none text-2xl pr-2"
+          >
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+        <div
+          id="mobile-menu"
+          class="mobile-menu-links closed absolute top-20 left-0 w-full bg-white shadow-xl flex-col pb-6 pt-2 space-y-4 items-center md:hidden border-t border-gray-100"
+        >
+          <a
+            href="index.html"
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2"
+            >Beranda</a
+          >
+          <a
+            href="produk.html"
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2"
+            >Produk</a
+          >
+          <a
+            href="profil.html"
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2"
+            >Profil</a
+          >
+          <a
+            href="kegiatan.html"
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2"
+            >Kegiatan</a
+          >
+          <a
+            href="artikel.html"
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2 active"
+            >Artikel</a
+          >
+          <button
+            onclick="
+              document
+                .getElementById('tracking-modal')
+                .classList.remove('hidden');
+              document.getElementById('mobile-menu-btn').click();
+            "
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2 cursor-pointer"
+          >
+            Lacak Pesanan
+          </button>
+          <button
+            onclick="
+              toggleAuthModal();
+              document.getElementById('mobile-menu-btn').click();
+            "
+            class="relative text-sekarsa-dark hover:text-sekarsa-ochre font-medium text-lg w-full text-center py-2 cursor-pointer"
+          >
+            <i class="fas fa-user-circle mr-1"></i>
+            <span id="mobile-auth-text">Login / Daftar</span>
+          </button>
+          <a
+            href="kontak.html"
+            class="btn-kontak bg-sekarsa-dark text-white px-8 py-2.5 rounded-full hover:bg-sekarsa-red transition font-medium mt-2 shadow-md"
+            >Kontak Kami</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <!-- ========================================== -->
+    <!-- KONTEN HALAMAN: ARTIKEL                    -->
+    <!-- ========================================== -->
+
+    <!-- DAFTAR ARTIKEL (Halaman Utama Artikel) -->
+    <main class="page bg-kontur-tanah" id="page-artikel" style="display: block">
+      <div class="py-12 min-h-screen relative z-10">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-12 sm:mb-16 reveal">
+            <h2
+              class="text-3xl sm:text-4xl font-serif font-bold text-sekarsa-dark mb-4"
+            >
+              Artikel Sekarsa
+            </h2>
+            <div class="w-20 sm:w-24 h-1 bg-sekarsa-ochre mx-auto"></div>
+            <p
+              class="text-gray-500 mt-4 max-w-2xl mx-auto font-medium text-sm sm:text-base"
+            >
+              Eksplorasi cerita, sejarah, dan pengetahuan seputar kopi dari
+              Selatan Malang.
+            </p>
+          </div>
+
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 reveal-grid"
+          >
+            <!-- Card Artikel 1 -->
+            <a
+              href="#artikel-1"
+              class="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-500 flex flex-col border border-gray-100"
+            >
+              <div class="h-48 sm:h-64 overflow-hidden relative">
+                <img
+                  src="https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  alt="Robusta Dampit"
+                  loading="lazy"
+                  decoding="async"
+                  class="w-full h-full object-cover group-hover:scale-110 transition duration-700 ease-in-out"
+                />
+                <div
+                  class="absolute top-4 left-4 bg-sekarsa-tan text-sekarsa-dark text-[10px] sm:text-xs font-bold px-3 sm:px-4 py-1 sm:py-1.5 rounded-full uppercase shadow-md"
+                >
+                  Kopi Nusantara
+                </div>
+              </div>
+              <div class="p-6 sm:p-8 flex flex-col flex-grow">
+                <h3
+                  class="text-xl sm:text-2xl font-serif font-bold text-sekarsa-dark mb-3 group-hover:text-sekarsa-ochre transition"
+                >
+                  Mengenal Lebih Dekat Robusta Dampit: Permata Hitam Malang
+                </h3>
+                <p
+                  class="text-xs sm:text-sm text-gray-500 mb-6 line-clamp-3 leading-relaxed"
+                >
+                  Bagi para pecinta kopi nusantara, nama Robusta Dampit mungkin
+                  sudah tidak asing lagi terdengar. Berasal dari kawasan lereng
+                  Gunung Semeru...
+                </p>
+                <span
+                  class="text-sekarsa-ochre font-bold mt-auto flex items-center gap-2 group-hover:gap-3 transition-all uppercase text-xs sm:text-sm tracking-wider"
+                  >Baca Artikel <i class="fas fa-arrow-right"></i
+                ></span>
+              </div>
+            </a>
+
+            <!-- Card Artikel 2 -->
+            <a
+              href="#artikel-2"
+              class="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-500 flex flex-col border border-gray-100"
+            >
+              <div class="h-48 sm:h-64 overflow-hidden relative">
+                <img
+                  src="https://images.unsplash.com/photo-1506506307371-2cb2ee9b69b5?q=80&w=800"
+                  alt="Desa Sukodono"
+                  loading="lazy"
+                  decoding="async"
+                  class="w-full h-full object-cover group-hover:scale-110 transition duration-700 ease-in-out"
+                />
+                <div
+                  class="absolute top-4 left-4 bg-sekarsa-tan text-sekarsa-dark text-[10px] sm:text-xs font-bold px-3 sm:px-4 py-1 sm:py-1.5 rounded-full uppercase shadow-md"
+                >
+                  Sejarah Desa
+                </div>
+              </div>
+              <div class="p-6 sm:p-8 flex flex-col flex-grow">
+                <h3
+                  class="text-xl sm:text-2xl font-serif font-bold text-sekarsa-dark mb-3 group-hover:text-sekarsa-ochre transition"
+                >
+                  Kopi Sukodono: Secangkir Kopi Menyimpan Sejarah yang Hampir
+                  Terlupakan
+                </h3>
+                <p
+                  class="text-xs sm:text-sm text-gray-500 mb-6 line-clamp-3 leading-relaxed"
+                >
+                  Jauh sebelum menjadi komoditas yang khas, biji kopi Sukodono
+                  ini pernah menjadi bagian dari saksi kisah hidup seorang
+                  pengawas kebun muda yang suatu saat akan menjadi tokoh
+                  pergerakan nasional. Kisah yang nyaris terlupakan, bahkan oleh
+                  penduduk Sukodono sendiri...
+                </p>
+                <span
+                  class="text-sekarsa-ochre font-bold mt-auto flex items-center gap-2 group-hover:gap-3 transition-all uppercase text-xs sm:text-sm tracking-wider"
+                  >Baca Artikel <i class="fas fa-arrow-right"></i
+                ></span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- KONTEN: BACA ARTIKEL 1 -->
+    <main
+      class="page bg-kontur-tanah"
+      id="page-artikel-1"
+      style="display: none"
+    >
+      <div class="py-12 min-h-screen relative z-10">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between items-center mb-6 sm:mb-8">
+            <a
+              href="#artikel"
+              class="inline-flex items-center gap-2 text-sekarsa-dark hover:text-sekarsa-ochre transition font-bold bg-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl border border-gray-200 shadow-sm text-sm sm:text-base"
+              ><i class="fas fa-arrow-left"></i> Kembali</a
+            >
+            <button
+              class="btn-share inline-flex items-center gap-2 text-white bg-sekarsa-ochre hover:bg-sekarsa-tan transition font-bold px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl shadow-md text-sm sm:text-base"
+              data-title="Mengenal Lebih Dekat Robusta Dampit - Sekarsa Kopi"
+              data-text="Baca artikel menarik tentang Kopi Sukodono ini dari Sekarsa Kopi!"
+              data-url="artikel.html#artikel-1"
+            >
+              <i class="fas fa-share-nodes"></i> Bagikan
+            </button>
+          </div>
+          <article
+            class="reveal bg-white border border-gray-200 rounded-3xl p-6 sm:p-8 md:p-12 shadow-xl mb-16"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=80"
+              alt="Perkebunan Kopi Robusta"
+              loading="lazy"
+              decoding="async"
+              class="w-full h-48 sm:h-64 md:h-[450px] object-cover rounded-2xl mb-6 sm:mb-8 shadow-md"
+            />
+            <h1
+              class="text-2xl sm:text-3xl md:text-5xl font-serif font-bold text-sekarsa-navy mb-4 sm:mb-6 leading-tight"
+            >
+              Mengenal Lebih Dekat Robusta Dampit: Permata Hitam dari Selatan
+              Malang
+            </h1>
+            <div
+              class="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 mb-8 sm:mb-10 border-b border-gray-200 pb-4 sm:pb-6"
+            >
+              <span
+                class="flex items-center gap-2 bg-gray-50 px-2 sm:px-3 py-1.5 rounded-lg"
+                ><i class="fas fa-user-edit text-sekarsa-ochre"></i> Ditulis
+                oleh Tim Sekarsa Kopi</span
+              >
+              <span
+                class="flex items-center gap-2 bg-gray-50 px-2 sm:px-3 py-1.5 rounded-lg"
+                ><i class="fas fa-map-marker-alt text-sekarsa-ochre"></i>
+                Sukodono, Malang</span
+              >
+            </div>
+            <div
+              class="prose prose-base sm:prose-lg text-gray-700 leading-relaxed max-w-none text-justify"
+            >
+              <p
+                class="text-base sm:text-xl text-gray-600 mb-6 sm:mb-8 font-medium"
+              >
+                Bagi para pecinta kopi nusantara, nama
+                <strong>Robusta Dampit</strong> mungkin sudah tidak asing lagi
+                terdengar. Berasal dari kawasan lereng Gunung Semeru di bagian
+                selatan Kabupaten Malang, Jawa Timur, Kopi Dampit telah diakui
+                sebagai salah satu kopi robusta terbaik yang dimiliki Indonesia.
+              </p>
+              <h3
+                class="text-xl sm:text-2xl font-bold text-sekarsa-dark font-serif mt-8 sm:mt-10 mb-3 sm:mb-4"
+              >
+                Sejarah Singkat dan Geografis
+              </h3>
+              <p>
+                Kecamatan Dampit memang diberkahi dengan kondisi geografis yang
+                sangat ideal untuk pertumbuhan kopi jenis Robusta. Ketinggian
+                tanah yang berkisar antara 400 hingga 800 meter di atas
+                permukaan laut (mdpl), struktur tanah vulkanik yang subur, serta
+                curah hujan yang pas membuat tanaman kopi tumbuh dengan kualitas
+                maksimal.
+              </p>
+              <h3
+                class="text-xl sm:text-2xl font-bold text-sekarsa-dark font-serif mt-8 sm:mt-10 mb-3 sm:mb-4"
+              >
+                Karakteristik Cita Rasa yang Khas
+              </h3>
+              <p>
+                Kopi dari daerah ini bukan kopi sembarangan. Proses pematangan
+                buah yang lebih lambat karena hawa sejuk pegunungan membuat biji
+                kopi menyerap nutrisi dengan sempurna.
+              </p>
+              <ul
+                class="list-disc pl-5 sm:pl-6 space-y-2 sm:space-y-3 mt-4 mb-6 sm:mb-8 bg-gray-50 p-4 sm:p-6 rounded-2xl border border-gray-100"
+              >
+                <li>
+                  <strong class="text-sekarsa-navy">Full Body:</strong> Saat
+                  diseduh, kopi ini memberikan sensasi tebal dan mantap di
+                  mulut. Tidak encer, melainkan memberikan
+                  <em>mouthfeel</em> yang solid.
+                </li>
+                <li>
+                  <strong class="text-sekarsa-navy">Low Acidity:</strong> Khas
+                  biji robusta, kopi Dampit memiliki tingkat keasaman yang
+                  sangat rendah, sehingga ramah di lambung bagi banyak orang.
+                </li>
+                <li>
+                  <strong class="text-sekarsa-navy"
+                    >Notes Rasa yang Unik:</strong
+                  >
+                  Jika dipanggang dengan tepat, Anda akan menemukan jejak aroma
+                  <em>earthy</em>, karamel alami, hingga sentuhan cokelat pekat
+                  (<em>dark chocolate</em>) di akhir tegukan.
+                </li>
+              </ul>
+              <h3
+                class="text-xl sm:text-2xl font-bold text-sekarsa-dark font-serif mt-8 sm:mt-10 mb-3 sm:mb-4"
+              >
+                Mengapa Kopi Sukodono Begitu Spesial?
+              </h3>
+              <p>
+                Desa Sukodono, yang berada dalam lingkar ekosistem kopi selatan
+                Malang, mewarisi seluruh kekayaan genetika dan cita rasa dari
+                legenda Robusta Dampit tersebut. Melalui
+                <strong>Sekarsa Kopi</strong>, tim KKN Universitas Negeri Malang
+                bekerja sama dengan para petani lokal memastikan bahwa setiap
+                biji kopi dipetik saat merah sempurna (<em>red cherry</em>) dan
+                diproses dengan standar higienis.
+              </p>
+            </div>
+            <div
+              class="mt-12 sm:mt-16 bg-gradient-to-r from-sekarsa-navy to-sekarsa-dark rounded-2xl p-6 sm:p-8 md:p-10 text-center relative overflow-hidden"
+            >
+              <div
+                class="absolute -right-6 sm:-right-10 -top-6 sm:-top-10 opacity-10"
+              >
+                <i
+                  class="fas fa-mug-hot text-[100px] sm:text-[150px] text-white"
+                ></i>
+              </div>
+              <div class="relative z-10">
+                <h4
+                  class="text-xl sm:text-2xl font-bold text-sekarsa-tan mb-2 sm:mb-3 font-serif"
+                >
+                  Penasaran dengan cita rasanya?
+                </h4>
+                <p
+                  class="text-xs sm:text-sm text-gray-300 mb-6 sm:mb-8 max-w-lg mx-auto"
+                >
+                  Rasakan langsung sensasi kopi Robusta dan House Blend pilihan
+                  langsung dari perkebunan Desa Sukodono.
+                </p>
+                <a
+                  href="produk.html"
+                  class="inline-block text-sm sm:text-base bg-sekarsa-tan text-sekarsa-dark px-6 sm:px-8 py-3 sm:py-3.5 rounded-full font-bold hover:bg-white transition shadow-xl"
+                  >Kunjungi Katalog Produk</a
+                >
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </main>
+
+    <!-- KONTEN: BACA ARTIKEL 2 -->
+    <main
+      class="page bg-kontur-tanah"
+      id="page-artikel-2"
+      style="display: none"
+    >
+      <div class="py-12 min-h-screen relative z-10">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between items-center mb-6 sm:mb-8">
+            <a
+              href="#artikel"
+              class="inline-flex items-center gap-2 text-sekarsa-dark hover:text-sekarsa-ochre transition font-bold bg-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl border border-gray-200 shadow-sm text-sm sm:text-base"
+              ><i class="fas fa-arrow-left"></i> Kembali</a
+            >
+            <button
+              class="btn-share inline-flex items-center gap-2 text-white bg-sekarsa-ochre hover:bg-sekarsa-tan transition font-bold px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl shadow-md text-sm sm:text-base"
+              data-title="Sejarah Kopi Sukodono - Sekarsa Kopi"
+              data-text="Baca sejarah Kopi Sukodono yang hampir terlupakan, eksklusif dari Sekarsa Kopi!"
+              data-url="artikel.html#artikel-2"
+            >
+              <i class="fas fa-share-nodes"></i> Bagikan
+            </button>
+          </div>
+          <article
+            class="reveal bg-white border border-gray-200 rounded-3xl p-6 sm:p-8 md:p-12 shadow-xl mb-16 relative overflow-hidden"
+          >
+            <div class="absolute -left-10 top-40 opacity-5 pointer-events-none">
+              <i
+                class="fas fa-leaf text-[150px] sm:text-[200px] text-sekarsa-dark"
+              ></i>
+            </div>
+            <img
+              src="https://images.unsplash.com/photo-1506506307371-2cb2ee9b69b5?q=80&w=1080"
+              alt="Pemandangan Desa Sukodono"
+              loading="lazy"
+              decoding="async"
+              class="w-full h-48 sm:h-64 md:h-[450px] object-cover rounded-2xl mb-6 sm:mb-8 shadow-md relative z-10"
+            />
+            <h1
+              class="text-2xl sm:text-3xl md:text-5xl font-serif font-bold text-sekarsa-navy mb-4 sm:mb-6 leading-tight relative z-10"
+            >
+              Kopi Sukodono: Secangkir Kopi Menyimpan Sejarah yang Hampir
+              Terlupakan
+            </h1>
+            <div
+              class="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 mb-8 sm:mb-10 border-b border-gray-200 pb-4 sm:pb-6 relative z-10"
+            >
+              <span
+                class="flex items-center gap-2 bg-gray-50 px-2 sm:px-3 py-1.5 rounded-lg"
+                ><i class="fas fa-user-edit text-sekarsa-ochre"></i> Ditulis
+                oleh Tim Sekarsa</span
+              >
+              <span
+                class="flex items-center gap-2 bg-gray-50 px-2 sm:px-3 py-1.5 rounded-lg"
+                ><i class="fas fa-landmark text-sekarsa-ochre"></i>
+                Sejarah</span
+              >
+            </div>
+            <div
+              class="prose prose-base sm:prose-lg text-gray-700 leading-relaxed max-w-none text-justify relative z-10"
+            >
+              <p
+                class="text-base sm:text-xl text-gray-600 mb-6 sm:mb-8 font-medium"
+              >
+                <strong class="text-sekarsa-dark font-serif"
+                  >Kopi Sukodono</strong
+                >
+                menyimpan rahasia yang jarang diketahui, bahkan nyaris
+                terlupakan. "Kopi di sini bukan cuma komoditas mas, sebenernya
+                kopi di sini itu bagian dari sejarah." Ujar seorang warga
+                Sukodono ketika bercerita mengenai kopi Robusta yang diseduhnya.
+                Kalimat sederhana yang terasa menohok, karena sebagian besar
+                dari kita, baru-baru ini menyadari kedalaman makna di balik
+                ucapan tersebut.
+              </p>
+              <p
+                class="text-base sm:text-xl text-gray-600 mb-6 sm:mb-8 font-medium"
+              >
+                Dimulai sekitar tahun 1832, ketika pemerintah kolonial di bawah
+                kebijakan Tanam Paksa mulai membuka lahan di Kabupaten Malang
+                untuk ditanami kopi. Padahal sebelumnya, Malang bukan sebuah
+                wilayah yang diperhitungan secara ekonomi oleh Belanda. Daerah
+                ini justru menjadi benteng alam bagi perlawanan rakyat terhadap
+                Kumpeni.
+              </p>
+              <p
+                class="text-base sm:text-xl text-gray-600 mb-6 sm:mb-8 font-medium"
+              >
+                Tanah vulkanik yang subur membuat Malang berubah perlahan
+                menjadi salah satu lumbung kopi bagi Belanda, menyusul kebijakan
+                serupa yang lebih dulu diterapkan di Priangan. Ledakan produksi
+                kopi sempat mengubah wajah Malang secara fisik. Untuk mengangkut
+                biji kopi dari pedalaman ke Pelabuhan Surabaya, pemerintah
+                kolonial membangun jalur kereta api Malang-Surabaya pada tahun
+                1879 dan jaringan tram pada 1889, dua infrastruktur yang
+                akhirnya membuka isolasi Malang. Suasana masa itu pernah
+                digambarkan oleh seorang warga lawas Malang:
+              </p>
+              <blockquote
+                class="border-l-4 border-sekarsa-ochre pl-4 sm:pl-6 py-4 sm:py-6 my-8 sm:my-10 bg-sekarsa-tan/10 rounded-r-2xl text-sekarsa-dark font-serif italic text-lg sm:text-xl md:text-2xl leading-snug"
+              >
+                "Dulu, alun-alun kota dikelilingi pagar tanaman jarak,
+                gudang-gudang penyimpanan kopi milik pemerintah selalu penuh
+                sesak saat musim panen. Cikar-cikar bermuatan kopi dari desa
+                yang datang tak henti dari pagi hingga sore."
+              </blockquote>
+              <p
+                class="text-base sm:text-xl text-gray-600 mb-6 sm:mb-8 font-medium"
+              >
+                Di tengah industri kopi kolonial, muncullah kisah yang
+                menghangatkan hati di Perkebunan Kopi Sumber Duren yang saat ini
+                dikenal dengan Sukodono. Pada 1897, seorang pemuda Belanda
+                bernama <strong>E.F.E. Douwes Dekker</strong> mulai bekerja
+                sebagai opzichter atau pengawas kebun. Berbeda dengan pembesar
+                kebun yang dikenal angkuh dan sewenang-wenang terhadap buruh
+                bumiputera, Douwes Dekker justru menjadi sosok yang ramah,
+                berani, dan selalu membela kaum buruh dari kecurangan serta
+                perlakuan tidak adil. Karena ketangkasan dan sikapnya yang
+                membumi, para buruh menjulukinya <strong>Tuan Kidang</strong>,
+                merujuk pada seekor kijang yang lincah dan tangkas. Betapa
+                dicintainya ia oleh para buruh, terbukti ketika ia memutuskan
+                untuk berhenti bekerja, ia diantarkan berjalan kaki oleh para
+                buruh hingga ke Dampit, menempuh perjalanan sekitar empat jam.
+              </p>
+              <p
+                class="text-base sm:text-xl text-gray-600 mb-6 sm:mb-8 font-medium"
+              >
+                Lebih dari 1 abad kemudian, warisan tanah kopi masih terus
+                berbuah. Kisah panjang inilah yang menjadikan Kopi Dampit yang
+                bermula di tanah Sumber Duren atau Sukodono bukan sekedar
+                minuman, melainkan bagian dari warisan sejarah serta identitas
+                masyarakat Malang yang layak untuk terus diceritakan dan
+                dinikmati.
+              </p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- MODAL POPUPS                               -->
+    <!-- ========================================== -->
+    <!-- Modal Lacak Pesanan -->
+    <div
+      id="tracking-modal"
+      class="hidden fixed inset-0 bg-black/60 z-[150] flex items-center justify-center backdrop-blur-sm transition-all"
+    >
+      <div
+        class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl w-[90%] max-w-md relative"
+      >
+        <button
+          onclick="
+            document.getElementById('tracking-modal').classList.add('hidden')
+          "
+          class="absolute top-4 right-4 text-gray-400 hover:text-sekarsa-red text-2xl transition outline-none"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+        <h3
+          class="font-serif text-2xl sm:text-3xl font-bold text-sekarsa-dark mb-2"
+        >
+          Lacak Pesanan
+        </h3>
+        <p class="text-xs sm:text-sm text-gray-500 mb-6">
+          Masukkan kode unik resi yang Anda dapatkan setelah checkout.
+        </p>
+        <input
+          type="text"
+          id="tracking-input"
+          placeholder="Contoh: SK-12345678"
+          class="w-full border border-gray-300 rounded-xl p-3 sm:p-4 outline-none focus:border-sekarsa-ochre focus:ring-2 focus:ring-sekarsa-ochre mb-4 bg-gray-50 text-sm"
+        />
+        <button
+          onclick="checkTracking()"
+          class="w-full bg-sekarsa-navy text-white py-3 sm:py-3.5 rounded-xl font-bold hover:bg-sekarsa-dark transition shadow-lg text-sm sm:text-base"
+        >
+          <i class="fas fa-search mr-2"></i>Cek Status
+        </button>
+        <div id="tracking-result" class="mt-6"></div>
+      </div>
+    </div>
+
+    <!-- Modal Autentikasi -->
+    <div
+      id="auth-modal"
+      class="hidden fixed inset-0 bg-black/60 z-[160] flex items-center justify-center backdrop-blur-sm transition-all"
+    >
+      <div
+        class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl w-[90%] max-w-md relative overflow-hidden"
+      >
+        <button
+          onclick="toggleAuthModal()"
+          class="absolute top-4 right-4 text-gray-400 hover:text-sekarsa-red text-2xl transition outline-none"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+
+        <div class="flex border-b border-gray-200 mb-6">
+          <button
+            id="tab-login"
+            onclick="switchAuthTab('login')"
+            class="flex-1 py-3 text-center font-bold text-sekarsa-ochre border-b-2 border-sekarsa-ochre outline-none"
+          >
+            Login
+          </button>
+          <button
+            id="tab-register"
+            onclick="switchAuthTab('register')"
+            class="flex-1 py-3 text-center font-medium text-gray-400 border-b-2 border-transparent hover:text-gray-600 outline-none"
+          >
+            Daftar
+          </button>
+        </div>
+
+        <form id="form-login" class="space-y-4 block">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1"
+              >Nomor Handphone</label
+            >
+            <input
+              type="text"
+              id="login-hp"
+              placeholder="Contoh: 081234..."
+              class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:border-sekarsa-ochre bg-gray-50 text-sm"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1"
+              >Password</label
+            >
+            <input
+              type="password"
+              id="login-pass"
+              placeholder="***"
+              class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:border-sekarsa-ochre bg-gray-50 text-sm"
+            />
+          </div>
+          <button
+            type="button"
+            onclick="prosesLogin(event)"
+            class="w-full bg-sekarsa-navy text-white py-3.5 rounded-xl font-bold hover:bg-sekarsa-dark transition shadow-lg mt-2 text-sm"
+          >
+            Masuk
+          </button>
+        </form>
+
+        <form id="form-register" class="space-y-4 hidden">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1"
+              >Nama Lengkap</label
+            >
+            <input
+              type="text"
+              id="reg-nama"
+              placeholder="Nama Anda..."
+              class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:border-sekarsa-ochre bg-gray-50 text-sm"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1"
+              >Nomor Handphone</label
+            >
+            <input
+              type="text"
+              id="reg-hp"
+              placeholder="Contoh: 081234..."
+              class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:border-sekarsa-ochre bg-gray-50 text-sm"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1"
+              >Password</label
+            >
+            <input
+              type="password"
+              id="reg-pass"
+              placeholder="Buat password..."
+              class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:border-sekarsa-ochre bg-gray-50 text-sm"
+            />
+          </div>
+          <button
+            type="button"
+            onclick="prosesDaftar(event)"
+            class="w-full bg-sekarsa-ochre text-white py-3.5 rounded-xl font-bold hover:bg-sekarsa-tan transition shadow-lg mt-2 text-sm"
+          >
+            Daftar & Simpan
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Profil -->
+    <div
+      id="profile-modal"
+      class="hidden fixed inset-0 bg-black/60 z-[160] flex items-center justify-center backdrop-blur-sm transition-all"
+    >
+      <div
+        class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl w-[90%] max-w-lg relative overflow-hidden flex flex-col max-h-[85vh]"
+      >
+        <button
+          onclick="
+            document.getElementById('profile-modal').classList.add('hidden')
+          "
+          class="absolute top-4 right-4 text-gray-400 hover:text-sekarsa-red text-2xl transition outline-none"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+        <h3
+          class="font-serif text-2xl font-bold text-sekarsa-dark mb-4 border-b pb-3"
+        >
+          Profil Saya
+        </h3>
+
+        <div
+          class="bg-sekarsa-navy/5 p-4 rounded-xl mb-6 flex justify-between items-center border border-sekarsa-tan/20"
+        >
+          <div>
+            <p class="text-[10px] sm:text-xs text-gray-500 mb-0.5">
+              Nama Lengkap
+            </p>
+            <p
+              id="profile-nama"
+              class="font-bold text-sekarsa-dark text-sm sm:text-base"
+            >
+              -
+            </p>
+            <p class="text-[10px] sm:text-xs text-gray-500 mt-2 mb-0.5">
+              Nomor Handphone
+            </p>
+            <p
+              id="profile-hp"
+              class="font-bold text-sekarsa-dark text-sm sm:text-base"
+            >
+              -
+            </p>
+          </div>
+          <button
+            onclick="prosesLogout()"
+            class="bg-red-50 text-red-600 px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm hover:bg-red-100 transition shadow-sm border border-red-200 flex items-center gap-2"
+          >
+            <i class="fas fa-sign-out-alt"></i> Keluar
+          </button>
+        </div>
+
+        <h4 class="font-bold text-sekarsa-dark mb-3 text-sm sm:text-base">
+          <i class="fas fa-history mr-2 text-sekarsa-ochre"></i>Riwayat Pesanan
+          Anda
+        </h4>
+        <div
+          id="profile-history-list"
+          class="flex-grow overflow-y-auto space-y-3 pr-2"
+          style="scrollbar-width: thin"
+        ></div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- FOOTER UNIVERSAL                           -->
+    <!-- ========================================== -->
+    <footer
+      class="bg-sekarsa-dark text-white pt-12 sm:pt-16 pb-6 sm:pb-8 border-t border-white/10 bg-kontur-tanah bg-blend-overlay"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 pb-8 sm:pb-12 border-b border-white/10"
+        >
+          <div class="lg:col-span-2 pr-0 md:pr-4">
+            <div class="flex items-center gap-3 mb-4 sm:mb-6">
+              <img
+                src="elemen/Asset 9.png"
+                alt="Logo Sekarsa Kopi"
+                loading="lazy"
+                decoding="async"
+                width="48"
+                height="48"
+                class="h-10 sm:h-12 w-auto object-contain invert brightness-0"
+              />
+              <div
+                class="font-serif font-bold text-xl sm:text-2xl tracking-wide"
+              >
+                SEKARSA KOPI
+              </div>
+            </div>
+            <p
+              class="text-xs sm:text-sm text-gray-400 max-w-sm leading-relaxed"
+            >
+              Unit usaha kopi dari tim KKN Universitas Negeri Malang di Desa
+              Sukodono. Merawat kembali kopi robusta lokal sebagai komoditas
+              unggulan dan identitas budaya masyarakat.
+            </p>
+          </div>
+          <div class="lg:col-span-1">
+            <h4
+              class="font-sans text-[10px] sm:text-xs font-bold tracking-widest uppercase text-sekarsa-ochre mb-4 sm:mb-6"
+            >
+              Jelajahi
+            </h4>
+            <div
+              class="flex flex-col space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-400"
+            >
+              <a href="index.html" class="hover:text-white transition"
+                >Beranda</a
+              >
+              <a href="produk.html" class="hover:text-white transition"
+                >Katalog Produk</a
+              >
+              <a href="profil.html" class="hover:text-white transition"
+                >Profil Tim</a
+              >
+              <a href="kegiatan.html" class="hover:text-white transition"
+                >Kegiatan</a
+              >
+              <a href="artikel.html" class="hover:text-white transition"
+                >Artikel</a
+              >
+              <a href="kontak.html" class="hover:text-white transition"
+                >Kontak Kami</a
+              >
+            </div>
+          </div>
+          <div class="lg:col-span-1">
+            <h4
+              class="font-sans text-[10px] sm:text-xs font-bold tracking-widest uppercase text-sekarsa-ochre mb-4 sm:mb-6"
+            >
+              Produk
+            </h4>
+            <div
+              class="flex flex-col space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-400"
+            >
+              <a href="produk.html" class="hover:text-white transition"
+                >Bubuk</a
+              >
+              <a href="produk.html" class="hover:text-white transition"
+                >Roast Beans</a
+              >
+              <a href="produk.html" class="hover:text-white transition"
+                >Green Beans</a
+              >
+              <a href="produk.html" class="hover:text-white transition"
+                >Drip Bag</a
+              >
+            </div>
+          </div>
+          <div class="lg:col-span-1">
+            <h4
+              class="font-sans text-[10px] sm:text-xs font-bold tracking-widest uppercase text-sekarsa-ochre mb-4 sm:mb-6"
+            >
+              Terhubung
+            </h4>
+            <div
+              class="flex flex-col space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-400"
+            >
+              <a
+                href="https://www.instagram.com/sekarsa.kopi?igsh=MWExbmZmMXZreTh3bQ=="
+                target="_blank"
+                class="hover:text-white transition"
+                >Instagram</a
+              >
+              <a
+                href="https://www.tiktok.com/@sekarsa.kopi"
+                target="_blank"
+                class="hover:text-white transition"
+                >TikTok</a
+              >
+              <a
+                href="https://wa.me/6282330636915"
+                target="_blank"
+                class="hover:text-white transition"
+                >WhatsApp</a
+              >
+            </div>
+          </div>
+        </div>
+        <div
+          class="flex flex-col md:flex-row justify-between items-center gap-3 pt-6 sm:pt-8 text-[10px] sm:text-xs text-gray-500 text-center md:text-left"
+        >
+          <p>&copy; 2026 Dibuat oleh J/D</p>
+          <a href="admin.html" class="underline hover:text-white transition"
+            >Admin Login</a
+          >
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts Khusus -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"
+    ></script>
+    <script defer src="main.js"></script>
+
+    <!-- Script Internal Khusus Routing Artikel -->
+    <script>
+      // Fungsi untuk mengatur pergantian halaman (Daftar vs Baca Artikel)
+      function showArticle(hashId) {
+        const pages = ["page-artikel", "page-artikel-1", "page-artikel-2"];
+        const targetPage = pages.includes("page-" + hashId)
+          ? "page-" + hashId
+          : "page-artikel";
+
+        pages.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.style.display = id === targetPage ? "block" : "none";
+        });
+
+        // Trigger animasi reveal ketika ganti halaman
+        setTimeout(() => {
+          document.querySelectorAll(".reveal").forEach((el) => {
+            el.classList.add("is-visible");
+          });
+        }, 100);
+      }
+
+      window.addEventListener("hashchange", () => {
+        let hash = location.hash.replace("#", "") || "artikel";
+        showArticle(hash);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      window.addEventListener("load", () => {
+        let hash = location.hash.replace("#", "") || "artikel";
+        showArticle(hash);
+      });
+    </script>
+  </body>
+</html>
